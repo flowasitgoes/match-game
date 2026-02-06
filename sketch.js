@@ -896,7 +896,12 @@ function startAudioRecording() {
     audioRecordDestination = ctx.createMediaStreamDestination();
     masterGainNode.connect(audioRecordDestination);
     recordedChunks = [];
-    mediaRecorder = new MediaRecorder(audioRecordDestination.stream);
+    // Safari/iOS 不支援 audio/webm，需用 audio/mp4 才能錄製與下載
+    const preferMime = (typeof MediaRecorder !== 'undefined' && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/webm'))
+      ? 'audio/webm'
+      : (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported('audio/mp4') ? 'audio/mp4' : '');
+    const options = preferMime ? { mimeType: preferMime } : {};
+    mediaRecorder = new MediaRecorder(audioRecordDestination.stream, options);
     mediaRecorder.ondataavailable = function (e) {
       if (e.data && e.data.size > 0) recordedChunks.push(e.data);
     };
@@ -909,13 +914,25 @@ function startAudioRecording() {
       }
       isRecordingAudio = false;
       if (recordedChunks.length === 0) return;
-      const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+      // 依瀏覽器實際格式：Safari/iOS 為 audio/mp4，Chrome 等為 audio/webm
+      const mime = (mediaRecorder && mediaRecorder.mimeType) ? mediaRecorder.mimeType : 'audio/webm';
+      const blob = new Blob(recordedChunks, { type: mime });
+      const ext = (mime.indexOf('mp4') !== -1) ? (mime.indexOf('video/') === 0 ? '.mp4' : '.m4a') : '.webm';
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'gameplay-music.webm';
-      a.click();
-      URL.revokeObjectURL(url);
+      a.download = 'gameplay-music' + ext;
+      // iOS Safari 不支援 download 屬性與程式觸發下載，改開新分頁讓使用者可「分享→儲存」
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isIOS) {
+        a.target = '_blank';
+        a.rel = 'noopener';
+        window.open(url, '_blank');
+        setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
+      } else {
+        a.click();
+        URL.revokeObjectURL(url);
+      }
       recordedChunks = [];
     };
     mediaRecorder.start(1000);
