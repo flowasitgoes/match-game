@@ -1,0 +1,10 @@
+{
+  "name": "shelf-game",
+  "private": true,
+  "scripts": {
+    "start": "serve -l 3006"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

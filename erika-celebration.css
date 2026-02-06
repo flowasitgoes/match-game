@@ -1,0 +1,1546 @@
+/* えりか style - 過場恭喜用，僅作用於 .celebration-erika-wrap 內 */
+.celebration-erika-wrap #csscanvas {
+  position: relative;
+  top: auto;
+  left: auto;
+  width: 192px;
+  height: 368px;
+  background-color: transparent;
+  margin: 0 auto;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.celebration-erika-wrap #corebody {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+}
+
+.celebration-erika-wrap #head {
+  position: absolute;
+  top: -56px;
+  left: -8px;
+  width: 46px;
+  height: 46px;
+  border-radius: 23px 23px 23px 23px / 19px 19px 23px 23px;
+  background-color: rgba(249, 219, 209, 1);
+  -webkit-transform-origin: 50% 100%;
+  -moz-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+  -webkit-transform: rotate(15deg);
+  -moz-transform: rotate(15deg);
+  transform: rotate(15deg);
+  z-index: 200;
+}
+
+.celebration-erika-wrap #backhair {
+  position: absolute;
+  top: -66px;
+  left: -12px;
+  width: 54px;
+  height: 52px;
+  border-radius: 27px 27px 11px 11px / 27px 27px 11px 11px;
+  background-color: rgba(242, 110, 77, 1);
+  border-top: 2px solid rgba(255, 200, 180, 1);
+  border-left: 2px solid rgba(255, 200, 180, 1);
+  border-right: 2px solid rgba(255, 200, 180, 1);
+  -webkit-transform-origin: 50% 100%;
+  -moz-transform-origin: 50% 100%;
+  transform-origin: 50% 100%;
+  -webkit-transform: rotate(15deg);
+  -moz-transform: rotate(15deg);
+  transform: rotate(15deg);
+  z-index: 0;
+}
+
+.celebration-erika-wrap #backhair_r_0 {
+  position: absolute;
+  top: 41px;
+  left: -4px;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  border-left: 1px solid rgba(255, 200, 180, 1);
+  border-bottom: 1px solid rgba(255, 200, 180, 1);
+}
+
+.celebration-erika-wrap #backhair_r_1 {
+  position: absolute;
+  top: 60px;
+  left: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(30deg);
+  -moz-transform: rotate(30deg);
+  transform: rotate(30deg);
+  border-left: 1px solid rgba(255, 200, 180, 1);
+  border-bottom: 1px solid rgba(255, 200, 180, 1);
+}
+
+.celebration-erika-wrap #backhair_l_0 {
+  position: absolute;
+  top: 41px;
+  left: 26px;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  border-top: 1px solid rgba(255, 200, 180, 1);
+  border-right: 1px solid rgba(255, 200, 180, 1);
+}
+
+.celebration-erika-wrap #backhair_l_1 {
+  position: absolute;
+  top: 60px;
+  left: 30px;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(60deg);
+  -moz-transform: rotate(60deg);
+  transform: rotate(60deg);
+  border-top: 1px solid rgba(255, 200, 180, 1);
+  border-right: 1px solid rgba(255, 200, 180, 1);
+}
+
+.celebration-erika-wrap #backhair_c {
+  position: absolute;
+  top: 68px;
+  left: 17px;
+  width: 18px;
+  height: 18px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  border-bottom: 1px solid rgba(255, 200, 180, 1);
+  border-right: 1px solid rgba(255, 200, 180, 1);
+}
+
+.celebration-erika-wrap #hair { position: absolute; top: 0; left: 0; }
+.celebration-erika-wrap #fronthair { position: absolute; top: -4px; left: -1px; }
+
+.celebration-erika-wrap #fronthair_r0 {
+  position: absolute;
+  top: 0;
+  left: 8px;
+  width: 8px;
+  height: 20px;
+  border-radius: 0 0 0 8px / 0 0 0 20px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(20deg);
+  -moz-transform: rotate(20deg);
+  transform: rotate(20deg);
+}
+
+.celebration-erika-wrap #fronthair_r1 {
+  position: absolute;
+  top: 0;
+  left: 15px;
+  width: 8px;
+  height: 20px;
+  border-radius: 0 0 0 8px / 0 0 0 20px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(15deg);
+  -moz-transform: rotate(15deg);
+  transform: rotate(15deg);
+}
+
+.celebration-erika-wrap #fronthair_l1 {
+  position: absolute;
+  top: 0;
+  left: 27px;
+  width: 8px;
+  height: 20px;
+  border-radius: 0 0 8px 0 / 0 0 20px 0;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(-15deg);
+  -moz-transform: rotate(-15deg);
+  transform: rotate(-15deg);
+}
+
+.celebration-erika-wrap #fronthair_l0 {
+  position: absolute;
+  top: 0;
+  left: 35px;
+  width: 8px;
+  height: 20px;
+  border-radius: 0 0 8px 0 / 0 0 20px 0;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform: rotate(-20deg);
+  -moz-transform: rotate(-20deg);
+  transform: rotate(-20deg);
+}
+
+.celebration-erika-wrap #sideburns {
+  position: absolute;
+  top: -2px;
+  left: 1px;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: rotate(4deg);
+  -moz-transform: rotate(4deg);
+  transform: rotate(4deg);
+  z-index: 300;
+}
+
+.celebration-erika-wrap #sideburns_r { position: absolute; top: 0; left: 0; }
+.celebration-erika-wrap #sideburns_r_0 {
+  position: absolute;
+  top: 4px;
+  left: 2px;
+  width: 8px;
+  height: 16px;
+  border-radius: 4px 0 0 0;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(10deg);
+  -moz-transform: rotate(10deg);
+  transform: rotate(10deg);
+}
+
+.celebration-erika-wrap #sideburns_r_1 {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  width: 8px;
+  height: 36px;
+  border-radius: 0 0 4px 4px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-8deg);
+  -moz-transform: rotate(-8deg);
+  transform: rotate(-8deg);
+}
+
+.celebration-erika-wrap #sideburns_r_2 {
+  position: absolute;
+  top: 30px;
+  left: -2px;
+  width: 8px;
+  height: 16px;
+  border-radius: 4px 4px 2px 2px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.celebration-erika-wrap #sideburns_r_3,
+.celebration-erika-wrap #sideburns_r_4 {
+  position: absolute;
+  top: 13px;
+  left: 0;
+  width: 6px;
+  height: 16px;
+  border-radius: 2px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+}
+.celebration-erika-wrap #sideburns_r_3 { -webkit-transform: rotate(90deg); -moz-transform: rotate(90deg); transform: rotate(90deg); }
+.celebration-erika-wrap #sideburns_r_4 { -webkit-transform: rotate(-100deg); -moz-transform: rotate(-100deg); transform: rotate(-100deg); }
+
+.celebration-erika-wrap #sideburns_r_5 {
+  position: absolute;
+  top: 13px;
+  left: 0;
+  width: 4px;
+  height: 12px;
+  border-radius: 0 2px 4px 0 / 0 2px 12px 0;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(100deg);
+  -moz-transform: rotate(100deg);
+  transform: rotate(100deg);
+}
+
+.celebration-erika-wrap #sideburns_r_6 {
+  position: absolute;
+  top: 11px;
+  left: 1px;
+  width: 2px;
+  height: 6px;
+  border-radius: 0 0 2px 0 / 0 0 6px 0;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(100deg);
+  -moz-transform: rotate(100deg);
+  transform: rotate(100deg);
+}
+
+.celebration-erika-wrap #sideburns_l { position: absolute; top: 2px; left: 36px; }
+.celebration-erika-wrap #sideburns_l_0 {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  width: 8px;
+  height: 20px;
+  border-radius: 0 6px 0 0 / 0 10px 0 0;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-15deg);
+  -moz-transform: rotate(-15deg);
+  transform: rotate(-15deg);
+}
+
+.celebration-erika-wrap #sideburns_l_1 {
+  position: absolute;
+  top: 18px;
+  left: 0;
+  width: 8px;
+  height: 36px;
+  border-radius: 0 0 4px 4px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-2deg);
+  -moz-transform: rotate(-2deg);
+  transform: rotate(-2deg);
+}
+
+.celebration-erika-wrap #sideburns_l_2 {
+  position: absolute;
+  top: 30px;
+  left: 2px;
+  width: 8px;
+  height: 16px;
+  border-radius: 4px 4px 2px 2px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.celebration-erika-wrap #sideburns_l_3,
+.celebration-erika-wrap #sideburns_l_4 {
+  position: absolute;
+  top: 13px;
+  left: 0;
+  width: 6px;
+  height: 16px;
+  border-radius: 2px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+}
+.celebration-erika-wrap #sideburns_l_3 { -webkit-transform: rotate(-100deg); -moz-transform: rotate(-100deg); transform: rotate(-100deg); }
+.celebration-erika-wrap #sideburns_l_4 { -webkit-transform: rotate(100deg); -moz-transform: rotate(100deg); transform: rotate(100deg); }
+
+.celebration-erika-wrap #sideburns_l_5 {
+  position: absolute;
+  top: 13px;
+  left: 0;
+  width: 4px;
+  height: 12px;
+  border-radius: 2px 0 0 4px / 2px 0 0 12px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-100deg);
+  -moz-transform: rotate(-100deg);
+  transform: rotate(-100deg);
+}
+
+.celebration-erika-wrap #sideburns_l_6 {
+  position: absolute;
+  top: 11px;
+  left: 1px;
+  width: 2px;
+  height: 6px;
+  border-radius: 0 0 0 2px / 0 0 0 6px;
+  background-color: rgba(242, 110, 77, 1);
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-100deg);
+  -moz-transform: rotate(-100deg);
+  transform: rotate(-100deg);
+}
+
+.celebration-erika-wrap #eye_r {
+  position: absolute;
+  top: 20px;
+  left: 4px;
+  width: 14px;
+  height: 8px;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: scale(1, 0.9) skew(1deg);
+  -moz-transform: scale(1, 0.9) skew(1deg);
+  transform: scale(1, 0.9) skew(1deg);
+}
+
+.celebration-erika-wrap #eye_r_upperline {
+  position: absolute;
+  top: -1px;
+  left: 2px;
+  width: 13px;
+  height: 22px;
+  border-radius: 50%;
+  border-top: 2px solid black;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: rotate(-20deg);
+  -moz-transform: rotate(-20deg);
+  transform: rotate(-20deg);
+}
+
+.celebration-erika-wrap #eye_r_outline {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 12px;
+  height: 15px;
+  border-radius: 6px 6px 2px 3px / 8px 6px 6px 5px;
+  background-color: rgba(65, 50, 55, 1);
+  border-left: 2px solid white;
+  border-right: 1px solid white;
+}
+
+.celebration-erika-wrap #eye_r_core {
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  width: 4px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.celebration-erika-wrap #eye_r_upperwhite {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  width: 6px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.celebration-erika-wrap #eye_r_lowerwhite {
+  position: absolute;
+  top: 10px;
+  left: 3px;
+  width: 2px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.celebration-erika-wrap #eye_l {
+  position: absolute;
+  top: 20px;
+  left: 30px;
+  width: 14px;
+  height: 8px;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: scale(1, 0.9) skew(-1deg);
+  -moz-transform: scale(1, 0.9) skew(-1deg);
+  transform: scale(1, 0.9) skew(-1deg);
+}
+
+.celebration-erika-wrap #eye_l_upperline {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 13px;
+  height: 22px;
+  border-radius: 50%;
+  border-top: 2px solid black;
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+  -webkit-transform: rotate(20deg);
+  -moz-transform: rotate(20deg);
+  transform: rotate(20deg);
+}
+
+.celebration-erika-wrap #eye_l_outline {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  width: 12px;
+  height: 15px;
+  border-radius: 6px 6px 3px 2px / 6px 8px 5px 6px;
+  background-color: rgba(65, 50, 55, 1);
+  border-left: 1px solid white;
+  border-right: 2px solid white;
+}
+
+.celebration-erika-wrap #eye_l_core {
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  width: 4px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.celebration-erika-wrap #eye_l_upperwhite {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  width: 6px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.celebration-erika-wrap #eye_l_lowerwhite {
+  position: absolute;
+  top: 10px;
+  left: 3px;
+  width: 2px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.celebration-erika-wrap #brow_r {
+  position: absolute;
+  top: 16px;
+  left: 6px;
+  width: 10px;
+  height: 4px;
+  border-radius: 50%;
+  border-top: 1px solid rgba(65, 50, 55, 1);
+  -webkit-transform-origin: 100% 50%;
+  -moz-transform-origin: 100% 50%;
+  transform-origin: 100% 50%;
+  -webkit-transform: rotate(10deg);
+  -moz-transform: rotate(10deg);
+  transform: rotate(10deg);
+}
+
+.celebration-erika-wrap #brow_l {
+  position: absolute;
+  top: 16px;
+  left: 32px;
+  width: 10px;
+  height: 4px;
+  border-radius: 50%;
+  border-top: 1px solid rgba(65, 50, 55, 1);
+  -webkit-transform-origin: 0% 50%;
+  -moz-transform-origin: 0% 50%;
+  transform-origin: 0% 50%;
+  -webkit-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  transform: rotate(-10deg);
+}
+
+.celebration-erika-wrap #mouth {
+  position: absolute;
+  top: 37px;
+  left: 20px;
+  width: 10px;
+  height: 4px;
+  border-radius: 50%;
+  border-bottom: 1px solid gray;
+}
+
+.celebration-erika-wrap #neck { position: absolute; top: 0; left: 0; }
+.celebration-erika-wrap #neck_tohead {
+  position: absolute;
+  top: -16px;
+  left: 11px;
+  width: 10px;
+  height: 16px;
+  border-radius: 4px;
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #neckline_upper {
+  position: absolute;
+  top: -6px;
+  left: 6px;
+  width: 20px;
+  height: 14px;
+  border-radius: 20px 20px 0 0 / 8px 8px 0 0;
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #neckline_lower {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  width: 20px;
+  height: 16px;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.celebration-erika-wrap #sholder_r {
+  position: absolute;
+  top: -7px;
+  left: -17px;
+  width: 24px;
+  height: 12px;
+  border-radius: 10px 6px 0 6px / 6px 6px 0 6px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  background-color: rgba(251, 253, 232, 1);
+  z-index: 1;
+}
+
+.celebration-erika-wrap #scarf_r {
+  position: absolute;
+  top: -2px;
+  left: -8px;
+  width: 20px;
+  height: 20px;
+  -webkit-transform: rotate(-5deg) scale(1, 1.6);
+  -moz-transform: rotate(-5deg) scale(1, 1.6);
+  transform: rotate(-5deg) scale(1, 1.6);
+  background: linear-gradient(to bottom right, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 40%, rgba(181,36,91,1) 40%, rgba(181,36,91,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 50%, transparent 50%, transparent);
+  z-index: 150;
+}
+
+.celebration-erika-wrap #upperarm_r {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 48px;
+  border-radius: 4px 4px 6px 6px;
+  -webkit-transform-origin: 6px 6px;
+  -moz-transform-origin: 6px 6px;
+  transform-origin: 6px 6px;
+  -webkit-transform: rotate(130deg);
+  -moz-transform: rotate(130deg);
+  transform: rotate(130deg);
+  background-color: rgba(251, 253, 232, 1);
+  z-index: 155;
+}
+
+.celebration-erika-wrap #lowerarm_r {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  width: 12px;
+  height: 48px;
+  border-radius: 4px 4px 6px 6px;
+  -webkit-transform-origin: 6px 6px;
+  -moz-transform-origin: 6px 6px;
+  transform-origin: 6px 6px;
+  -webkit-transform: rotate(12deg);
+  -moz-transform: rotate(12deg);
+  transform: rotate(12deg);
+  background: linear-gradient(to bottom, rgba(251,253,232,1) 0%, rgba(251,253,232,1) 83%, rgba(205,118,152,1) 83%, rgba(205,118,152,1) 87%, rgba(255,255,255,1) 87%, rgba(255,255,255,1) 90%, rgba(205,118,152,1) 90%, rgba(205,118,152,1));
+}
+
+.celebration-erika-wrap #lowerarm_r_r {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 40px;
+  border-radius: 4px 0 0 2px;
+  -webkit-transform-origin: 6px 6px;
+  -moz-transform-origin: 6px 6px;
+  transform-origin: 6px 6px;
+  -webkit-transform: rotate(6deg);
+  -moz-transform: rotate(6deg);
+  transform: rotate(6deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #lowerarm_r_l {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  width: 6px;
+  height: 40px;
+  border-radius: 0 4px 2px 0;
+  -webkit-transform-origin: 6px 6px;
+  -moz-transform-origin: 6px 6px;
+  transform-origin: 6px 6px;
+  -webkit-transform: rotate(-6deg);
+  -moz-transform: rotate(-6deg);
+  transform: rotate(-6deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #hand_r {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 12px;
+  height: 20px;
+  border-radius: 4px 4px 8px 4px / 4px 4px 4px 8px;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-6deg);
+  -moz-transform: rotate(-6deg);
+  transform: rotate(-6deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #hand_r_l {
+  position: absolute;
+  top: 1px;
+  left: 8px;
+  width: 6px;
+  height: 16px;
+  border-radius: 4px 4px 8px 0 / 4px 4px 8px 0;
+  -webkit-transform: rotate(-15deg);
+  -moz-transform: rotate(-15deg);
+  transform: rotate(-15deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #sholder_l {
+  position: absolute;
+  top: -4px;
+  left: 14px;
+  width: 24px;
+  height: 12px;
+  border-radius: 6px 10px 6px 0 / 6px 6px 6px 0;
+  -webkit-transform: rotate(-12deg);
+  -moz-transform: rotate(-12deg);
+  transform: rotate(-12deg);
+  background-color: rgba(251, 253, 232, 0);
+  z-index: 1;
+}
+
+.celebration-erika-wrap #scarf_l {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  width: 20px;
+  height: 20px;
+  -webkit-transform: rotate(16deg) scale(1, 1.6);
+  -moz-transform: rotate(16deg) scale(1, 1.6);
+  transform: rotate(16deg) scale(1, 1.6);
+  background: linear-gradient(to bottom left, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 40%, rgba(181,36,91,1) 40%, rgba(181,36,91,1) 45%, rgba(255,255,255,1) 45%, rgba(255,255,255,1) 50%, transparent 50%, transparent);
+  z-index: 120;
+}
+
+.celebration-erika-wrap #upperarm_l {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  width: 12px;
+  height: 48px;
+  border-radius: 4px 4px 6px 6px;
+  -webkit-transform-origin: 6px 6px;
+  -moz-transform-origin: 6px 6px;
+  transform-origin: 6px 6px;
+  -webkit-transform: rotate(-66deg);
+  -moz-transform: rotate(-66deg);
+  transform: rotate(-66deg);
+  background-color: rgba(251, 253, 232, 1);
+  z-index: 110;
+}
+
+.celebration-erika-wrap #lowerarm_l {
+  position: absolute;
+  top: 36px;
+  left: -4px;
+  width: 12px;
+  height: 48px;
+  border-radius: 4px 4px 6px 6px;
+  -webkit-transform-origin: 6px 6px;
+  -moz-transform-origin: 6px 6px;
+  transform-origin: 6px 6px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  transform: rotate(90deg);
+  background: linear-gradient(to bottom, rgba(251,253,232,1) 0%, rgba(251,253,232,1) 83%, rgba(205,118,152,1) 83%, rgba(205,118,152,1) 87%, rgba(255,255,255,1) 87%, rgba(255,255,255,1) 90%, rgba(205,118,152,1) 90%, rgba(205,118,152,1));
+}
+
+.celebration-erika-wrap #lowerarm_l_r,
+.celebration-erika-wrap #lowerarm_l_l {
+  position: absolute;
+  top: 0;
+  width: 6px;
+  height: 40px;
+  border-radius: 4px 0 0 2px;
+  -webkit-transform-origin: 6px 6px;
+  -moz-transform-origin: 6px 6px;
+  transform-origin: 6px 6px;
+  background-color: rgba(251, 253, 232, 1);
+}
+.celebration-erika-wrap #lowerarm_l_r { left: 0; -webkit-transform: rotate(6deg); -moz-transform: rotate(6deg); transform: rotate(6deg); }
+.celebration-erika-wrap #lowerarm_l_l { left: 6px; -webkit-transform: rotate(-6deg); -moz-transform: rotate(-6deg); transform: rotate(-6deg); }
+
+.celebration-erika-wrap #hand_l {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 12px;
+  height: 20px;
+  border-radius: 4px 4px 8px 4px / 4px 4px 4px 8px;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(15deg);
+  -moz-transform: rotate(15deg);
+  transform: rotate(15deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #hand_l_l {
+  position: absolute;
+  top: 1px;
+  left: 8px;
+  width: 6px;
+  height: 16px;
+  border-radius: 4px 4px 8px 0 / 4px 4px 8px 0;
+  -webkit-transform: rotate(-15deg);
+  -moz-transform: rotate(-15deg);
+  transform: rotate(-15deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #bust {
+  position: absolute;
+  top: -40px;
+  left: -4px;
+  width: 32px;
+  height: 44px;
+  border-radius: 4px 4px 8px 8px / 4px 4px 8px 8px;
+  -webkit-transform-origin: 50% 96%;
+  -moz-transform-origin: 50% 96%;
+  transform-origin: 50% 96%;
+  -webkit-transform: rotate(-6deg);
+  -moz-transform: rotate(-6deg);
+  transform: rotate(-6deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #bust_r {
+  position: absolute;
+  top: 0;
+  left: -3px;
+  width: 10px;
+  height: 36px;
+  border-radius: 5px 5px 0 0;
+  -webkit-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  transform: rotate(-10deg);
+  background-color: rgba(251, 253, 232, 1);
+  z-index: 1;
+}
+
+.celebration-erika-wrap #bust_l {
+  position: absolute;
+  top: 0;
+  left: 25px;
+  width: 10px;
+  height: 36px;
+  border-radius: 5px 5px 0 0;
+  -webkit-transform: rotate(10deg);
+  -moz-transform: rotate(10deg);
+  transform: rotate(10deg);
+  background-color: rgba(251, 253, 232, 1);
+  z-index: 1;
+}
+
+.celebration-erika-wrap #ribbon {
+  position: absolute;
+  top: 16px;
+  left: 13px;
+  z-index: 200;
+}
+
+.celebration-erika-wrap #ribbon_r_upper { position: absolute; top: 0; left: -18px; }
+.celebration-erika-wrap #ribbon_r_upper_1 {
+  position: absolute;
+  top: -4px;
+  left: 1px;
+  width: 18px;
+  height: 14px;
+  border-radius: 2px;
+  -webkit-transform: skew(30deg) rotate(20deg);
+  -moz-transform: skew(30deg) rotate(20deg);
+  transform: skew(30deg) rotate(20deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+.celebration-erika-wrap #ribbon_r_upper_2 {
+  position: absolute;
+  top: 2px;
+  left: 1px;
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  -webkit-transform: skew(-30deg) rotate(-15deg);
+  -moz-transform: skew(-30deg) rotate(-15deg);
+  transform: skew(-30deg) rotate(-15deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+
+.celebration-erika-wrap #ribbon_r_lower { position: absolute; top: 8px; left: -8px; }
+.celebration-erika-wrap #ribbon_r_lower_1 {
+  position: absolute;
+  top: -2px;
+  left: -4px;
+  width: 7px;
+  height: 20px;
+  -webkit-transform: rotate(0deg) skew(-30deg);
+  -moz-transform: rotate(0deg) skew(-30deg);
+  transform: rotate(0deg) skew(-30deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+.celebration-erika-wrap #ribbon_r_lower_2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 20px;
+  -webkit-transform: rotate(55deg) skew(30deg);
+  -moz-transform: rotate(55deg) skew(30deg);
+  transform: rotate(55deg) skew(30deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+
+.celebration-erika-wrap #ribbon_c {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 12px;
+  background-color: rgba(181, 36, 91, 1);
+}
+
+.celebration-erika-wrap #ribbon_l_upper { position: absolute; top: 0; left: 5px; }
+.celebration-erika-wrap #ribbon_l_upper_1 {
+  position: absolute;
+  top: -4px;
+  left: 0;
+  width: 18px;
+  height: 14px;
+  border-radius: 2px;
+  -webkit-transform: skew(-30deg) rotate(-20deg);
+  -moz-transform: skew(-30deg) rotate(-20deg);
+  transform: skew(-30deg) rotate(-20deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+.celebration-erika-wrap #ribbon_l_upper_2 {
+  position: absolute;
+  top: 2px;
+  left: 0;
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  -webkit-transform: skew(30deg) rotate(15deg);
+  -moz-transform: skew(30deg) rotate(15deg);
+  transform: skew(30deg) rotate(15deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+
+.celebration-erika-wrap #ribbon_l_lower { position: absolute; top: 8px; left: 8px; }
+.celebration-erika-wrap #ribbon_l_lower_1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 7px;
+  height: 20px;
+  -webkit-transform: rotate(-55deg) skew(-30deg);
+  -moz-transform: rotate(-55deg) skew(-30deg);
+  transform: rotate(-55deg) skew(-30deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+.celebration-erika-wrap #ribbon_l_lower_2 {
+  position: absolute;
+  top: -2px;
+  left: 4px;
+  width: 7px;
+  height: 20px;
+  -webkit-transform: rotate(0deg) skew(30deg);
+  -moz-transform: rotate(0deg) skew(30deg);
+  transform: rotate(0deg) skew(30deg);
+  background-color: rgba(181, 36, 91, 1);
+}
+
+.celebration-erika-wrap #button_r_upper {
+  position: absolute;
+  top: 38px;
+  left: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(205, 118, 152, 1);
+  z-index: 190;
+}
+
+.celebration-erika-wrap #button_l_upper {
+  position: absolute;
+  top: 38px;
+  left: 22px;
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(205, 118, 152, 1);
+  z-index: 190;
+}
+
+.celebration-erika-wrap #button_r_lower,
+.celebration-erika-wrap #button_l_lower {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(205, 118, 152, 1);
+}
+.celebration-erika-wrap #button_r_lower { position: absolute; top: 10px; left: 0; }
+.celebration-erika-wrap #button_l_lower { position: absolute; top: 10px; left: 18px; }
+
+.celebration-erika-wrap #waist {
+  position: absolute;
+  top: -24px;
+  left: -10px;
+  width: 24px;
+  height: 32px;
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #waist_r1 {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 10px;
+  height: 16px;
+  -webkit-transform: rotate(-9deg);
+  -moz-transform: rotate(-9deg);
+  transform: rotate(-9deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #waist_r2 {
+  position: absolute;
+  top: 12px;
+  left: -2px;
+  width: 10px;
+  height: 16px;
+  -webkit-transform: rotate(9deg);
+  -moz-transform: rotate(9deg);
+  transform: rotate(9deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #waist_l2 {
+  position: absolute;
+  top: -2px;
+  left: 16px;
+  width: 10px;
+  height: 16px;
+  -webkit-transform: rotate(9deg);
+  -moz-transform: rotate(9deg);
+  transform: rotate(9deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #waist_l1 {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  width: 10px;
+  height: 16px;
+  -webkit-transform: rotate(-9deg);
+  -moz-transform: rotate(-9deg);
+  transform: rotate(-9deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #skirt {
+  position: relative;
+  top: 20px;
+  left: -4px;
+  width: 32px;
+  height: 8px;
+  background-color: rgba(251, 253, 232, 1);
+  z-index: 110;
+  -webkit-transform: rotate(-12deg);
+  -moz-transform: rotate(-12deg);
+  transform: rotate(-12deg);
+}
+
+.celebration-erika-wrap #skirt_r0 {
+  position: absolute;
+  top: -1px;
+  left: -12px;
+  width: 10px;
+  height: 32px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  background-color: rgba(251, 253, 232, 1);
+  border-right: 4px solid rgba(209, 196, 151, 1);
+}
+
+.celebration-erika-wrap #skirt_r1 {
+  position: absolute;
+  top: 0;
+  left: -9px;
+  width: 16px;
+  height: 36px;
+  -webkit-transform: rotate(30deg);
+  -moz-transform: rotate(30deg);
+  transform: rotate(30deg);
+  background-color: rgba(251, 253, 232, 1);
+  border-right: 3px solid rgba(209, 196, 151, 1);
+}
+
+.celebration-erika-wrap #skirt_r2 {
+  position: absolute;
+  top: 4px;
+  left: -1px;
+  width: 16px;
+  height: 36px;
+  -webkit-transform: rotate(10deg);
+  -moz-transform: rotate(10deg);
+  transform: rotate(10deg);
+  background-color: rgba(251, 253, 232, 1);
+  border-right: 4px solid rgba(209, 196, 151, 1);
+}
+
+.celebration-erika-wrap #skirt_c {
+  position: absolute;
+  top: 5px;
+  left: 9px;
+  width: 16px;
+  height: 36px;
+  background-color: rgba(251, 253, 232, 1);
+  border-right: 5px solid rgba(209, 196, 151, 1);
+}
+
+.celebration-erika-wrap #skirt_l2 {
+  position: absolute;
+  top: 4px;
+  left: 18px;
+  width: 16px;
+  height: 36px;
+  -webkit-transform: rotate(-10deg);
+  -moz-transform: rotate(-10deg);
+  transform: rotate(-10deg);
+  background-color: rgba(251, 253, 232, 1);
+  border-right: 4px solid rgba(209, 196, 151, 1);
+}
+
+.celebration-erika-wrap #skirt_l1 {
+  position: absolute;
+  top: 1px;
+  left: 25px;
+  width: 16px;
+  height: 36px;
+  -webkit-transform: rotate(-30deg);
+  -moz-transform: rotate(-30deg);
+  transform: rotate(-30deg);
+  background-color: rgba(251, 253, 232, 1);
+  border-right: 3px solid rgba(209, 196, 151, 1);
+}
+
+.celebration-erika-wrap #skirt_l0 {
+  position: absolute;
+  top: -2px;
+  left: 34px;
+  width: 10px;
+  height: 34px;
+  -webkit-transform: rotate(-45deg);
+  -moz-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  background-color: rgba(251, 253, 232, 1);
+}
+
+.celebration-erika-wrap #crotch {
+  position: absolute;
+  top: 32px;
+  left: 6px;
+  width: 12px;
+  height: 12px;
+  z-index: 100;
+}
+
+.celebration-erika-wrap #thigh_r {
+  position: absolute;
+  top: 0;
+  left: -12px;
+  width: 12px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(15deg);
+  -moz-transform: rotate(15deg);
+  transform: rotate(15deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #thigh_r_r {
+  position: absolute;
+  top: 8px;
+  left: -4px;
+  width: 8px;
+  height: 80px;
+  border-radius: 5px 5px 5px 5px / 20px 0 0 5px;
+  -webkit-transform: rotate(-3deg);
+  -moz-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #thigh_r_l {
+  position: absolute;
+  top: 0;
+  left: 6px;
+  width: 8px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform: rotate(2deg);
+  -moz-transform: rotate(2deg);
+  transform: rotate(2deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #shin_r {
+  position: absolute;
+  top: 80px;
+  left: 4px;
+  width: 8px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-5deg);
+  -moz-transform: rotate(-5deg);
+  transform: rotate(-5deg);
+  background: linear-gradient(to bottom, rgba(249,219,209,1) 0%, rgba(249,219,209,1) 20%, rgba(242,110,77,1) 20%, rgba(242,110,77,1));
+}
+
+.celebration-erika-wrap #shin_r_r {
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 8px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform: rotate(-3deg);
+  -moz-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+  background: linear-gradient(to bottom, rgba(249,219,209,1) 0%, rgba(249,219,209,1) 20%, rgba(242,110,77,1) 20%, rgba(242,110,77,1));
+}
+
+.celebration-erika-wrap #foot_r {
+  position: absolute;
+  top: 76px;
+  left: -4px;
+  width: 16px;
+  height: 36px;
+  border-radius: 4px 6px 6px 8px / 4px 6px 12px 32px;
+  -webkit-transform-origin: 6px 4px;
+  -moz-transform-origin: 6px 4px;
+  transform-origin: 6px 4px;
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  transform: rotate(45deg);
+  background-color: rgba(110, 81, 73, 1);
+}
+
+.celebration-erika-wrap #foot_r_socks {
+  position: absolute;
+  top: -2px;
+  left: 0;
+  width: 8px;
+  height: 14px;
+  border-radius: 3px;
+  background-color: rgba(230, 215, 180, 1);
+}
+
+.celebration-erika-wrap #thigh_l {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  width: 12px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-15deg);
+  -moz-transform: rotate(-15deg);
+  transform: rotate(-15deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #thigh_l_r {
+  position: absolute;
+  top: 0;
+  left: -4px;
+  width: 8px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform: rotate(-3deg);
+  -moz-transform: rotate(-3deg);
+  transform: rotate(-3deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #thigh_l_l {
+  position: absolute;
+  top: 8px;
+  left: 6px;
+  width: 8px;
+  height: 80px;
+  border-radius: 5px 5px 5px 5px / 5px 20px 5px 0;
+  -webkit-transform: rotate(2deg);
+  -moz-transform: rotate(2deg);
+  transform: rotate(2deg);
+  background-color: rgba(249, 219, 209, 1);
+}
+
+.celebration-erika-wrap #shin_l {
+  position: absolute;
+  top: 80px;
+  left: -2px;
+  width: 8px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform-origin: 50% 0%;
+  -moz-transform-origin: 50% 0%;
+  transform-origin: 50% 0%;
+  -webkit-transform: rotate(-5deg);
+  -moz-transform: rotate(-5deg);
+  transform: rotate(-5deg);
+  background: linear-gradient(to bottom, rgba(249,219,209,1) 0%, rgba(249,219,209,1) 20%, rgba(242,110,77,1) 20%, rgba(242,110,77,1));
+}
+
+.celebration-erika-wrap #shin_l_l {
+  position: absolute;
+  top: 0;
+  left: 4px;
+  width: 8px;
+  height: 88px;
+  border-radius: 5px;
+  -webkit-transform: rotate(3deg);
+  -moz-transform: rotate(3deg);
+  transform: rotate(3deg);
+  background: linear-gradient(to bottom, rgba(249,219,209,1) 0%, rgba(249,219,209,1) 20%, rgba(242,110,77,1) 20%, rgba(242,110,77,1));
+}
+
+.celebration-erika-wrap #foot_l {
+  position: absolute;
+  top: 76px;
+  left: -2px;
+  width: 16px;
+  height: 36px;
+  border-radius: 4px 6px 6px 8px / 4px 6px 12px 32px;
+  -webkit-transform-origin: 6px 4px;
+  -moz-transform-origin: 6px 4px;
+  transform-origin: 6px 4px;
+  -webkit-transform: rotate(-20deg) scale(0.9, 1);
+  -moz-transform: rotate(-20deg) scale(0.9, 1);
+  transform: rotate(-20deg) scale(0.9, 1);
+  background-color: rgba(110, 81, 73, 1);
+}
+
+.celebration-erika-wrap #foot_l_socks {
+  position: absolute;
+  top: -2px;
+  left: 5px;
+  width: 8px;
+  height: 14px;
+  border-radius: 3px;
+  background-color: rgba(230, 215, 180, 1);
+}
+
+/* box-sizing + 動畫設定 */
+.celebration-erika-wrap #csscanvas div {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  animation-duration: 0.8s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  -webkit-animation-duration: 0.8s;
+  -moz-animation-iteration-count: infinite;
+  -moz-animation-timing-function: linear;
+  -moz-animation-duration: 0.8s;
+}
+
+.celebration-erika-wrap #sideburns_r div {
+  background: linear-gradient(to right, rgba(255,200,180,1) 0%, rgba(242,110,77,1) 30%, rgba(242,110,77,1));
+}
+
+.celebration-erika-wrap #sideburns_l div {
+  background: linear-gradient(to left, rgba(255,200,180,1) 0%, rgba(242,110,77,1) 30%, rgba(242,110,77,1));
+}
+
+/* keyframes（全域名稱，不需前綴） */
+@keyframes waist_move {
+  0% { top: -24px; left: -10px; }
+  25% { top: -24px; left: -24px; }
+  50% { top: -18px; left: -24px; }
+  80% { top: -24px; left: -24px; }
+  95% { top: -24px; left: -10px; }
+  100% { top: -24px; left: -10px; }
+}
+
+@keyframes skirt_move {
+  0% { transform: rotate(-12deg); }
+  25% { transform: rotate(0deg); }
+  50% { transform: rotate(4deg); }
+  80% { transform: rotate(0deg); }
+  95% { transform: rotate(-12deg); }
+  100% { transform: rotate(-12deg); }
+}
+
+@keyframes bust_move {
+  0% { transform: rotate(-6deg); }
+  25% { transform: rotate(0deg); }
+  80% { transform: rotate(0deg); }
+  95% { transform: rotate(-6deg); }
+  100% { transform: rotate(-6deg); }
+}
+
+@keyframes head_move {
+  0% { transform: rotate(15deg); }
+  25% { transform: rotate(0deg); }
+  50% { transform: rotate(4deg); }
+  80% { transform: rotate(0deg); }
+  95% { transform: rotate(15deg); }
+  100% { transform: rotate(15deg); }
+}
+
+@keyframes backhair_move {
+  0% { transform: rotate(15deg); }
+  25% { transform: rotate(0deg); }
+  50% { transform: rotate(4deg); }
+  80% { transform: rotate(0deg); }
+  95% { transform: rotate(15deg); }
+  100% { transform: rotate(15deg); }
+}
+
+@keyframes sideburns_move {
+  0%, 25%, 80%, 95%, 100% { transform: rotate(4deg); }
+  50% { transform: rotate(7deg); }
+}
+
+@keyframes sholder_r_move {
+  0%, 95%, 100% { transform: rotate(45deg); }
+  25%, 80% { transform: rotate(6deg); }
+}
+
+@keyframes scarf_r_move {
+  0%, 95%, 100% { transform: rotate(-5deg) scale(1, 1.6); }
+  25%, 80% { transform: rotate(-10deg) scale(1, 1.6); }
+}
+
+@keyframes upperarm_r_move {
+  0%, 95%, 100% { left: 0; transform: rotate(130deg); z-index: 155; }
+  25%, 80% { left: 8px; transform: rotate(90deg); z-index: 140; }
+  50% { left: 2px; transform: rotate(10deg); z-index: 140; }
+}
+
+@keyframes lowerarm_r_move {
+  0%, 95%, 100% { top: 40px; transform: rotate(12deg); }
+  25%, 80% { top: 36px; transform: rotate(100deg); }
+  50% { top: 36px; transform: rotate(155deg); }
+}
+
+@keyframes upperarm_l_move {
+  0%, 25%, 80%, 95%, 100% { transform: rotate(-66deg); }
+  50% { transform: rotate(-60deg); }
+}
+
+@keyframes thigh_r_move {
+  0%, 95%, 100% { top: 0; transform: rotate(15deg); }
+  25%, 80% { top: 0; transform: rotate(10deg); }
+  50% { top: -8px; transform: rotate(6deg); }
+}
+
+@keyframes shin_r_move {
+  0%, 95%, 100% { left: 4px; transform: rotate(-5deg); }
+  25%, 80% { left: 5px; transform: rotate(10deg); }
+  50% { left: 6px; transform: rotate(18deg); }
+}
+
+@keyframes foot_r_move {
+  0%, 95%, 100% { transform: rotate(45deg); }
+  25%, 80% { transform: rotate(20deg); }
+}
+
+@keyframes thigh_l_move {
+  0%, 95%, 100% { top: 0; left: 12px; transform: rotate(-15deg); }
+  25%, 50%, 80% { top: -8px; left: 4px; transform: rotate(-35deg); }
+  50% { transform: rotate(-30deg); }
+}
+
+@keyframes shin_l_move {
+  0%, 95%, 100% { left: -2px; transform: rotate(-5deg); }
+  25%, 80% { left: 0; transform: rotate(25deg); }
+  50% { left: 0; transform: rotate(30deg); }
+}
+
+@keyframes foot_l_move {
+  0%, 95%, 100% { top: 76px; transform: rotate(-20deg); }
+  25%, 80% { top: 80px; transform: rotate(-40deg); }
+  50% { top: 80px; transform: rotate(-55deg); }
+}
+
+@keyframes foot_l_socks_move {
+  0%, 95%, 100% { top: -2px; left: 5px; }
+  25%, 80% { top: -1px; left: 7px; }
+}
+
+/* 綁定動畫 */
+.celebration-erika-wrap #waist { animation-name: waist_move; }
+.celebration-erika-wrap #skirt { animation-name: skirt_move; }
+.celebration-erika-wrap #bust { animation-name: bust_move; }
+.celebration-erika-wrap #head { animation-name: head_move; }
+.celebration-erika-wrap #backhair { animation-name: backhair_move; }
+.celebration-erika-wrap #sideburns { animation-name: sideburns_move; }
+.celebration-erika-wrap #sholder_r { animation-name: sholder_r_move; }
+.celebration-erika-wrap #scarf_r { animation-name: scarf_r_move; }
+.celebration-erika-wrap #upperarm_r { animation-name: upperarm_r_move; }
+.celebration-erika-wrap #lowerarm_r { animation-name: lowerarm_r_move; }
+.celebration-erika-wrap #upperarm_l { animation-name: upperarm_l_move; }
+.celebration-erika-wrap #thigh_r { animation-name: thigh_r_move; }
+.celebration-erika-wrap #shin_r { animation-name: shin_r_move; }
+.celebration-erika-wrap #foot_r { animation-name: foot_r_move; }
+.celebration-erika-wrap #thigh_l { animation-name: thigh_l_move; }
+.celebration-erika-wrap #shin_l { animation-name: shin_l_move; }
+.celebration-erika-wrap #foot_l { animation-name: foot_l_move; }
+.celebration-erika-wrap #foot_l_socks { animation-name: foot_l_socks_move; }

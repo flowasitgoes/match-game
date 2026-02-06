@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>整理書櫃</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Nunito', sans-serif;
+    }
+    body {
+      /* background: linear-gradient(180deg, #f5faf2 0%, #faf5eb 100%); */
+    }
+    #game-container {
+      /* 遊戲邊框變數（參考 weave 風格，可由 UI 調整） */
+      --game-border-size: 27px;
+      --game-border-line: 5px;
+      --game-border-color: #7aaaff;
+      --game-border-color-dark: #7a5ae8;
+      --game-border-back: rgba(255, 240, 230, 0.95);
+      --game-border-rotate-before: 180;
+      --game-border-rotate-after: 270;
+      --game-border-radius-divisor: 2;
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      /* 活潑 game-like 邊框：雙層 + 圓角 */
+      padding: var(--game-border-line);
+      background:
+        linear-gradient(var(--game-border-back), var(--game-border-back)) padding-box,
+        linear-gradient(135deg, var(--game-border-color) 0%, var(--game-border-color-dark) 50%, var(--game-border-color) 100%) border-box;
+      border: var(--game-border-line) solid transparent;
+      border-radius: calc(var(--game-border-size) - var(--game-border-line));
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 154, 122, 0.4),
+        0 0 0 1px rgba(255, 154, 122, 0.25),
+        0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+    /* weave 風格裝飾：旋轉的星形角標（左上、右下） */
+    #game-container::before,
+    #game-container::after {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+      width: var(--game-border-size);
+      height: var(--game-border-size);
+      border: var(--game-border-line) solid var(--game-border-color);
+      border-radius: calc(var(--game-border-size) / var(--game-border-radius-divisor) - var(--game-border-line));
+      opacity: 0.9;
+    }
+    #game-container::before {
+      top: calc(2 * var(--game-border-line));
+      left: calc(2 * var(--game-border-line));
+      transform: rotate(calc(var(--game-border-rotate-before) * 1deg));
+      box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    #game-container::after {
+      bottom: calc(2 * var(--game-border-line));
+      right: calc(2 * var(--game-border-line));
+      transform: rotate(calc(var(--game-border-rotate-after) * 1deg));
+      box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.1);
+    }
+    /* 過場時えりか風格角色疊層：僅在恭喜過關時顯示，放在左下角 */
+    #celebration-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      justify-content: flex-start;
+      align-items: flex-end;
+      padding-left: 2%;
+      padding-bottom: 5%;
+      pointer-events: none;
+    }
+    #celebration-overlay.visible {
+      display: flex;
+    }
+    .sound-and-canvas-wrapper {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .sound-bar {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      padding: 8px 12px;
+      background: transparent;
+    }
+    .icon-size-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .icon-size-wrap span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #50463c;
+    }
+    .icon-size-slider {
+      width: 100px;
+      accent-color: #b48a6a;
+    }
+    .icon-size-value {
+      min-width: 2.2em;
+      text-align: right;
+    }
+    .avatar-bg-gray-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .avatar-bg-gray-wrap span {
+      font-size: 13px;
+      font-weight: 600;
+      color: #50463c;
+    }
+    .avatar-bg-gray-slider {
+      width: 120px;
+      accent-color: #b48a6a;
+    }
+    .avatar-bg-gray-value {
+      min-width: 2.5em;
+      text-align: right;
+    }
+    .border-params-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 16px;
+    }
+    .border-params-wrap .param-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .border-params-wrap .param-row span:first-child {
+      font-size: 12px;
+      font-weight: 600;
+      color: #50463c;
+      min-width: 4.2em;
+    }
+    .border-params-wrap .param-row .param-value {
+      min-width: 2.2em;
+      text-align: right;
+      font-size: 12px;
+      color: #50463c;
+    }
+    .border-params-wrap input[type="range"] {
+      width: 72px;
+      accent-color: #b48a6a;
+    }
+    /* 拖曳滑過卡片音效參數 UI（在音效按鈕左側） */
+    .drag-hover-params-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 14px;
+      padding: 6px 10px;
+      background: rgba(255, 248, 240, 0.85);
+      border: 1px solid rgba(180, 170, 155, 0.6);
+      border-radius: 10px;
+    }
+    .drag-hover-param-row {
+      display: flex;
+      align-items: center;
+      gap: 4px 8px;
+    }
+    .drag-hover-param-row span:first-child {
+      font-size: 12px;
+      font-weight: 600;
+      color: #50463c;
+      min-width: 2.2em;
+    }
+    .drag-hover-slider {
+      width: 64px;
+      accent-color: #b48a6a;
+    }
+    .drag-hover-value {
+      font-size: 11px;
+      color: #6b5d52;
+      min-width: 3.5em;
+      text-align: right;
+    }
+    .drag-hover-preview-row {
+      margin-left: 4px;
+    }
+    .drag-hover-preview-checkbox {
+      font-size: 12px;
+      color: #50463c;
+      accent-color: #b48a6a;
+    }
+    .drag-hover-preview-checkbox label {
+      cursor: pointer;
+      user-select: none;
+    }
+    .drag-hover-preset-row select.drag-hover-preset-select {
+      font-size: 12px;
+      color: #50463c;
+      background: rgba(255, 248, 240, 0.95);
+      border: 1px solid rgba(180, 170, 155, 0.7);
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      accent-color: #b48a6a;
+    }
+    /* awe 填色 UI（Bronze / Gold 關鍵色動態調整） */
+    .awe-fill-params-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: 10px 16px;
+      padding: 8px 10px;
+      background: rgba(255, 248, 240, 0.9);
+      border: 1px solid rgba(180, 170, 155, 0.6);
+      border-radius: 10px;
+    }
+    .awe-fill-title {
+      width: 100%;
+      font-size: 13px;
+      font-weight: 700;
+      color: #50463c;
+      margin-bottom: 2px;
+    }
+    .awe-fill-section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 12px;
+    }
+    .awe-fill-section-title {
+      width: 100%;
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b5d52;
+    }
+    .awe-fill-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .awe-fill-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #50463c;
+      min-width: 3em;
+    }
+    .awe-fill-color {
+      width: 28px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid rgba(180, 170, 155, 0.7);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .awe-fill-hex {
+      width: 64px;
+      font-size: 11px;
+      color: #50463c;
+      padding: 4px 6px;
+      border: 1px solid rgba(180, 170, 155, 0.6);
+      border-radius: 6px;
+    }
+    .awe-fill-reset {
+      font-size: 11px;
+      padding: 4px 10px;
+      color: #50463c;
+      background: rgba(255, 248, 240, 0.95);
+      border: 1px solid rgba(180, 170, 155, 0.7);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .awe-fill-reset:hover {
+      background: rgba(255, 230, 210, 0.95);
+    }
+    /* awe1-30 背景填色 明度／飽和度 UI */
+    .awe-bg-hsl-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 12px;
+      padding: 6px 10px;
+      background: rgba(255, 248, 240, 0.9);
+      border: 1px solid rgba(180, 170, 155, 0.6);
+      border-radius: 10px;
+    }
+    .awe-bg-hsl-title {
+      width: 100%;
+      font-size: 12px;
+      font-weight: 600;
+      color: #50463c;
+    }
+    .awe-bg-hsl-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .awe-bg-hsl-row span:first-child {
+      font-size: 11px;
+      font-weight: 600;
+      color: #50463c;
+      min-width: 3em;
+    }
+    .awe-bg-hsl-slider {
+      width: 72px;
+      accent-color: #b48a6a;
+    }
+    .awe-bg-hsl-value {
+      font-size: 11px;
+      color: #6b5d52;
+      min-width: 2.5em;
+      text-align: right;
+    }
+    /* awe11-30 明度／飽和度 UI */
+    .awe-hsl-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 12px;
+      padding: 6px 10px;
+      background: rgba(255, 248, 240, 0.9);
+      border: 1px solid rgba(180, 170, 155, 0.6);
+      border-radius: 10px;
+    }
+    .awe-hsl-title {
+      width: 100%;
+      font-size: 12px;
+      font-weight: 600;
+      color: #50463c;
+    }
+    .awe-hsl-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .awe-hsl-row span:first-child {
+      font-size: 11px;
+      font-weight: 600;
+      color: #50463c;
+      min-width: 3em;
+    }
+    .awe-hsl-slider {
+      width: 72px;
+      accent-color: #b48a6a;
+    }
+    .awe-hsl-value {
+      font-size: 11px;
+      color: #6b5d52;
+      min-width: 2.5em;
+      text-align: right;
+    }
+    .sound-toggle-btn {
+      padding: 8px 12px;
+      font-size: 20px;
+      line-height: 1;
+      border: 1px solid rgba(180, 170, 155, 0.9);
+      border-radius: 12px;
+      background: rgba(255, 248, 240, 0.9);
+      color: #50463c;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .sound-toggle-btn:hover {
+      background: rgba(255, 230, 210, 0.95);
+      border-color: rgba(230, 175, 155, 0.9);
+    }
+    .sound-toggle-btn:disabled {
+      cursor: default;
+    }
+    .sound-btn-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 10px;
+    }
+    .sound-and-time-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .game-time-wrap {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+    }
+    .game-love-label-img {
+      height: 28px;
+      width: auto;
+      display: block;
+      object-fit: contain;
+    }
+    .game-time-display {
+      font-size: 14px;
+      font-weight: 700;
+      color: rgb(80, 70, 60);
+    }
+    .game-level-display {
+      font-size: 13px;
+      font-weight: 700;
+      color: rgb(90, 80, 70);
+    }
+    .win-condition-hint-overlay {
+      position: fixed;
+      top: 141px;
+      left: 0;
+      z-index: 10;
+      display: none;
+      max-width: max-content;
+      text-align: left;
+      padding: 8px 2px 8px 8px;
+      border: 6px solid #9b99ff;
+      border-radius: 12px 32px 22px 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgb(70, 60, 55);
+      background: rgba(255, 235, 245, 0.95);
+      box-shadow: 0 2px 12px rgba(200, 160, 180, 0.25);
+      pointer-events: none;
+    }
+    @media (max-width: 600px) {
+      .win-condition-hint-overlay {
+        max-width: 138px;
+        top: 0;
+      }
+    }
+    #game-container .game-canvas-wrapper {
+      flex: 1;
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #game-container canvas {
+      display: block;
+      touch-action: none;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 12px;
+    }
+    /* 書架層分隔線樣式（實際線條在 canvas 上繪製以對齊版面） */
+    .shelf-separator {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #fff;
+      pointer-events: none;
+    }
+    #debug-panel {
+      width: 280px;
+      flex-shrink: 0;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      background: rgba(0,0,0,0.92);
+      color: #0f0;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 13px;
+      line-height: 1.35;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <main id="game-container">
+    <div id="celebration-overlay" class="celebration-erika-wrap" aria-hidden="true">
+      <div id="csscanvas">
+        <div id="corebody">
+          <div id="waist">
+            <div id="waist_r1"></div>
+            <div id="waist_r2"></div>
+            <div id="waist_l2"></div>
+            <div id="waist_l1"></div>
+            <div id="bust">
+              <div id="bust_r"></div>
+              <div id="bust_l"></div>
+              <div id="sholder_r">
+                <div id="upperarm_r">
+                  <div id="lowerarm_r">
+                    <div id="lowerarm_r_r"></div>
+                    <div id="lowerarm_r_l"></div>
+                    <div id="hand_r">
+                      <div id="hand_r_l"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="scarf_r"></div>
+              <div id="sholder_l">
+                <div id="scarf_l"></div>
+                <div id="upperarm_l">
+                  <div id="lowerarm_l">
+                    <div id="lowerarm_l_r"></div>
+                    <div id="lowerarm_l_l"></div>
+                    <div id="hand_l">
+                      <div id="hand_l_l"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="button_r_upper"></div>
+              <div id="button_l_upper"></div>
+              <div id="ribbon">
+                <div id="ribbon_r_upper">
+                  <div id="ribbon_r_upper_1"></div>
+                  <div id="ribbon_r_upper_2"></div>
+                </div>
+                <div id="ribbon_r_lower">
+                  <div id="ribbon_r_lower_1"></div>
+                  <div id="ribbon_r_lower_2"></div>
+                </div>
+                <div id="ribbon_c"></div>
+                <div id="ribbon_l_upper">
+                  <div id="ribbon_l_upper_1"></div>
+                  <div id="ribbon_l_upper_2"></div>
+                </div>
+                <div id="ribbon_l_lower">
+                  <div id="ribbon_l_lower_1"></div>
+                  <div id="ribbon_l_lower_2"></div>
+                </div>
+              </div>
+              <div id="neck">
+                <div id="backhair">
+                  <div id="backhair_r_0"></div>
+                  <div id="backhair_r_1"></div>
+                  <div id="backhair_c"></div>
+                  <div id="backhair_l_1"></div>
+                  <div id="backhair_l_0"></div>
+                </div>
+                <div id="neck_tohead"></div>
+                <div id="neckline_upper"></div>
+                <div id="neckline_lower"></div>
+                <div id="head">
+                  <div id="hair">
+                    <div id="fronthair">
+                      <div id="fronthair_r0"></div>
+                      <div id="fronthair_r1"></div>
+                      <div id="fronthair_l1"></div>
+                      <div id="fronthair_l0"></div>
+                    </div>
+                  </div>
+                  <div id="eye_r">
+                    <div id="eye_r_outline">
+                      <div id="eye_r_core"></div>
+                      <div id="eye_r_upperwhite"></div>
+                      <div id="eye_r_lowerwhite"></div>
+                    </div>
+                    <div id="eye_r_upperline"></div>
+                  </div>
+                  <div id="eye_l">
+                    <div id="eye_l_outline">
+                      <div id="eye_l_core"></div>
+                      <div id="eye_l_upperwhite"></div>
+                      <div id="eye_l_lowerwhite"></div>
+                    </div>
+                    <div id="eye_l_upperline"></div>
+                  </div>
+                  <div id="brow_r"></div>
+                  <div id="brow_l"></div>
+                  <div id="mouth"></div>
+                  <div id="sideburns">
+                    <div id="sideburns_r">
+                      <div id="sideburns_r_0">
+                        <div id="sideburns_r_1">
+                          <div id="sideburns_r_2">
+                            <div id="sideburns_r_3">
+                              <div id="sideburns_r_4">
+                                <div id="sideburns_r_5">
+                                  <div id="sideburns_r_6"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div id="sideburns_l">
+                      <div id="sideburns_l_0">
+                        <div id="sideburns_l_1">
+                          <div id="sideburns_l_2">
+                            <div id="sideburns_l_3">
+                              <div id="sideburns_l_4">
+                                <div id="sideburns_l_5">
+                                  <div id="sideburns_l_6"></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="button_r_lower"></div>
+            <div id="button_l_lower"></div>
+            <div id="skirt">
+              <div id="skirt_r0"></div>
+              <div id="skirt_r1"></div>
+              <div id="skirt_r2"></div>
+              <div id="skirt_c"></div>
+              <div id="skirt_l2"></div>
+              <div id="skirt_l1"></div>
+              <div id="skirt_l0"></div>
+            </div>
+            <div id="crotch">
+              <div id="thigh_r">
+                <div id="thigh_r_r"></div>
+                <div id="thigh_r_l"></div>
+                <div id="shin_r">
+                  <div id="shin_r_r"></div>
+                  <div id="foot_r">
+                    <div id="foot_r_socks"></div>
+                  </div>
+                </div>
+              </div>
+              <div id="thigh_l">
+                <div id="thigh_l_r"></div>
+                <div id="thigh_l_l"></div>
+                <div id="shin_l">
+                  <div id="shin_l_l"></div>
+                  <div id="foot_l">
+                    <div id="foot_l_socks"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <link rel="stylesheet" href="erika-celebration.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>
