@@ -27,46 +27,94 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: linear-gradient(180deg, #f5faf2 0%, #faf5eb 100%);
+      background-color: #f5faf2;
+      background-image: url('/public/loading-background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       touch-action: manipulation;
       -webkit-user-select: none;
       user-select: none;
+      min-height: 100vh;
+      min-height: 100dvh;
+      transition: opacity 0.45s ease-out;
+    }
+    #intro-wrap.intro-fade-out {
+      opacity: 0;
+      pointer-events: none;
     }
     #intro-loading {
       position: absolute;
       inset: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      box-sizing: border-box;
+    }
+    .intro-loading-inner {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      gap: 24px;
+      gap: 32px;
     }
     #intro-loading-dots {
-      display: flex;
-      gap: 12px;
-      align-items: center;
+      position: relative;
+      width: 100px;
+      height: 120px;
+      margin-top: 14px;
     }
-    #intro-loading-dots .dot {
-      width: 16px;
-      height: 16px;
+    #intro-loading-dots::before {
+      content: '';
+      position: absolute;
+      top: 120px;
+      right: -15px;
+      bottom: -15px;
+      left: -15px;
       border-radius: 50%;
-      background: #7aaaff;
-      animation: intro-bounce 0.6s ease-in-out infinite;
+      border: 2px solid rgba(122, 170, 255, 0.25);
+      animation: intro-pulse-ring 1.8s ease-in-out infinite;
     }
-    #intro-loading-dots .dot:nth-child(1) { animation-delay: 0s; background: #7aaaff; }
-    #intro-loading-dots .dot:nth-child(2) { animation-delay: 0.1s; background: #ff9a7a; }
-    #intro-loading-dots .dot:nth-child(3) { animation-delay: 0.2s; background: #7a5ae8; }
-    #intro-loading-dots .dot:nth-child(4) { animation-delay: 0.3s; background: #7dd3a8; }
-    #intro-loading-dots .dot:nth-child(5) { animation-delay: 0.4s; background: #f5c6a8; }
-    @keyframes intro-bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-12px); }
-    }
-    #intro-loading-text {
-      font-size: 15px;
+    #intro-loading-dots::after {
+      content: 'loading...';
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 20px;
+      font-size: 20px;
       font-weight: 600;
       color: #50463c;
       letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    #intro-loading-dots .dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      margin-left: -9px;
+      margin-top: -9px;
+      border-radius: 50%;
+      transform-origin: 50% 51px;
+      animation: intro-orbit 2.2s linear infinite;
+      box-shadow: 0 0 14px currentColor, 0 0 28px currentColor;
+    }
+    #intro-loading-dots .dot:nth-child(1) { animation-delay: 0s; background: #7aaaff; color: #7aaaff; }
+    #intro-loading-dots .dot:nth-child(2) { animation-delay: -0.44s; background: #ff9a7a; color: #ff9a7a; }
+    #intro-loading-dots .dot:nth-child(3) { animation-delay: -0.88s; background: #7a5ae8; color: #7a5ae8; }
+    #intro-loading-dots .dot:nth-child(4) { animation-delay: -1.32s; background: #7dd3a8; color: #7dd3a8; }
+    #intro-loading-dots .dot:nth-child(5) { animation-delay: -1.76s; background: #f5c6a8; color: #f5c6a8; }
+    @keyframes intro-orbit {
+      from { transform: rotate(0deg) translateY(-42px); }
+      to { transform: rotate(360deg) translateY(-42px); }
+    }
+    @keyframes intro-pulse-ring {
+      0%, 100% { opacity: 0.4; transform: scale(0.95); border-color: rgba(122, 170, 255, 0.2); }
+      50% { opacity: 1; transform: scale(1.05); border-color: rgba(122, 170, 255, 0.5); }
     }
     #intro-video-screen {
       position: absolute;
@@ -100,13 +148,66 @@
       display: flex;
     }
     #intro-click-to-start .start-hint {
-      padding: 14px 28px;
-      background: rgba(255, 255, 255, 0.95);
-      color: #50463c;
+      padding: 20px 48px;
       font-size: 16px;
       font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: #1a1a1a;
+      background: #9bedce;
       border-radius: 999px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 0 0 2px #60daaa;
+      position: relative;
+      box-sizing: border-box;
+      transition: color 0.25s;
+      z-index: 1;
+      cursor: pointer;
+      display: inline-block;
+    }
+    #intro-click-to-start .start-hint::before,
+    #intro-click-to-start .start-hint::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      box-sizing: inherit;
+      border-radius: 999px;
+      z-index: -1;
+    }
+    #intro-click-to-start .start-hint::before {
+      border: 1em solid transparent;
+    }
+    #intro-click-to-start .start-hint::after {
+      border: 0 solid transparent;
+      mix-blend-mode: color-dodge;
+    }
+    #intro-click-to-start .start-hint.playing {
+      color: #fff;
+      font-weight: 700;
+    }
+    #intro-click-to-start .start-hint.playing::before {
+      background: #60daaa;
+      border-top-color: #60daaa;
+      border-right-color: #60daaa;
+      border-bottom-color: #60daaa;
+      transition:
+        background 0s linear 0.4s,
+        border-top-color 0.15s linear,
+        border-right-color 0.15s linear 0.15s,
+        border-bottom-color 0.15s linear 0.25s;
+    }
+    #intro-click-to-start .start-hint.playing::after {
+      border-top: 1em solid #60daaa;
+      border-left-width: 1em;
+      border-right-width: 1em;
+      transform: rotate(540deg);
+      transition:
+        transform 0.4s linear 0s,
+        border-left-width 0s linear 0.35s;
+    }
+    #intro-click-to-start .start-hint:hover {
+      filter: brightness(1.08);
     }
     #intro-pause-overlay {
       position: absolute;
@@ -198,9 +299,9 @@
       box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
     }
     #intro-dialogue-6s .intro-dialogue-box { left: 100px; }
-    #intro-dialogue-12s .intro-dialogue-box { left: 150px; top: 250px; }
-    #intro-dialogue-22s .intro-dialogue-box { left: auto; right: 180px; }
-    #intro-dialogue-42s .intro-dialogue-box { left: 150px; }
+    #intro-dialogue-12s .intro-dialogue-box { left: 40px; bottom: 115px; }
+    #intro-dialogue-22s .intro-dialogue-box { right: 40px; }
+    #intro-dialogue-42s .intro-dialogue-box { left: 40px; }
     #intro-dialogue-58s .intro-dialogue-box { right: 0; top: 128px; }
     [id^="intro-dialogue-"] .intro-dialogue-inner {
       border: 2px solid #fff;
@@ -313,21 +414,22 @@
 <body>
   <div id="intro-wrap">
     <div id="intro-loading">
-      <div id="intro-loading-dots">
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
+      <div class="intro-loading-inner">
+        <div id="intro-loading-dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
       </div>
-      <span id="intro-loading-text">載入中...</span>
     </div>
     <div id="intro-video-screen">
       <video id="intro-video" playsinline preload="auto" muted>
         <source src="/public/eggcute-promo-final-video-02092026-(11).mp4" type="video/mp4" />
       </video>
       <div id="intro-click-to-start">
-        <span class="start-hint">點擊開始</span>
+        <span class="start-hint">開始遊戲</span>
       </div>
       <div id="intro-pause-overlay">
         <span class="continue-hint" aria-label="點擊繼續"><i class="fa-regular fa-hand-pointer" aria-hidden="true"></i></span>

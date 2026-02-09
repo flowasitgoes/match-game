@@ -21,6 +21,11 @@
     }
     body {
       /* background: linear-gradient(180deg, #f5faf2 0%, #faf5eb 100%); */
+      opacity: 0;
+      transition: opacity 0.4s ease-out;
+    }
+    body.game-page-loaded {
+      opacity: 1;
     }
     #game-container {
       /* 遊戲邊框變數（參考 weave 風格，可由 UI 調整） */
@@ -662,5 +667,14 @@
   <link rel="stylesheet" href="erika-celebration.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
   <script src="sketch.js"></script>
+  <script>
+    (function () {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          document.body.classList.add('game-page-loaded');
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
