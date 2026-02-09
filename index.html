@@ -153,7 +153,7 @@
       font-weight: 700;
       font-family: 'Nunito', sans-serif;
       color: #1a1a1a;
-      background: #9bedce;
+      background: #ede89b;
       border-radius: 999px;
       box-shadow: inset 0 0 0 2px #60daaa;
       position: relative;
@@ -395,6 +395,8 @@
       display: flex;
     }
     #intro-start-btn {
+      position: relative;
+      overflow: hidden;
       padding: 18px 48px;
       font-size: 20px;
       font-weight: 700;
@@ -405,6 +407,37 @@
       border-radius: 999px;
       cursor: pointer;
       box-shadow: 0 6px 24px rgba(122, 90, 232, 0.4);
+    }
+    #intro-start-btn span {
+      position: relative;
+      z-index: 1;
+    }
+    /* Vertical Overlap：點擊時上下四條帶從邊緣往中間疊合 */
+    #intro-start-btn::before,
+    #intro-start-btn::after,
+    #intro-start-btn span::before,
+    #intro-start-btn span::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: rgba(0, 0, 0, 0.2);
+      transition: height 0.4s ease-in-out;
+    }
+    #intro-start-btn::before { top: 0; }
+    #intro-start-btn::after { top: auto; bottom: 0; }
+    #intro-start-btn span::before { top: auto; bottom: 0; }
+    #intro-start-btn span::after { top: 0; }
+    #intro-start-btn span::before,
+    #intro-start-btn span::after {
+      transition-delay: 0.4s;
+    }
+    #intro-start-btn.vertical-overlap::before,
+    #intro-start-btn.vertical-overlap::after,
+    #intro-start-btn.vertical-overlap span::before,
+    #intro-start-btn.vertical-overlap span::after {
+      height: 100%;
     }
     #intro-start-btn:hover {
       filter: brightness(1.08);
@@ -429,7 +462,7 @@
         <source src="/public/eggcute-promo-final-video-02092026-(11).mp4" type="video/mp4" />
       </video>
       <div id="intro-click-to-start">
-        <span class="start-hint">開始遊戲</span>
+        <span class="start-hint">呼~ 今天的天空真美啊~!</span>
       </div>
       <div id="intro-pause-overlay">
         <span class="continue-hint" aria-label="點擊繼續"><i class="fa-regular fa-hand-pointer" aria-hidden="true"></i></span>
@@ -437,7 +470,7 @@
       <div id="intro-dialogue-6s">
         <div class="intro-dialogue-box">
           <div class="intro-dialogue-inner">
-            <span class="intro-dialogue-text">準備好了嗎? 伙計</span>
+            <span class="intro-dialogue-text">準備好了嗎，伙計？</span>
             <button type="button" class="intro-dialogue-ok">ok</button>
           </div>
         </div>
@@ -483,7 +516,7 @@
         </div>
       </div>
       <div id="intro-start-btn-wrap">
-        <button type="button" id="intro-start-btn">開始遊戲</button>
+        <button type="button" id="intro-start-btn"><span>開始遊戲</span></button>
       </div>
     </div>
   </div>

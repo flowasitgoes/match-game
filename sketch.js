@@ -1927,6 +1927,13 @@ function setup() {
   // 在 canvas 外放開時也要觸發 release（轉成 canvas 座標）
   document.addEventListener('mouseup', onGlobalMouseUp);
   document.addEventListener('touchend', onGlobalTouchEnd, { passive: false });
+
+  // 等 canvas 與遊戲 UI 都建立好後再觸發頁面淡入，避免 canvas 突兀出現
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      document.body.classList.add('game-page-loaded');
+    });
+  });
 }
 
 function canvasCoordsFromEvent(e) {

@@ -276,6 +276,7 @@
   }
 
   function playClickSoundThenGoToGame() {
+    startBtn.classList.add('vertical-overlap');
     var ctx = null;
     try {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
