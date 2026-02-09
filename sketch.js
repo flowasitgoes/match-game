@@ -882,6 +882,13 @@ function getAudioContext() {
   }
   return audioCtx;
 }
+// 供 intro 在首次使用者操作時呼叫，解除 AudioContext 暫停（避免進遊戲後音效被擋）
+window.resumeGameAudioContext = function () {
+  try {
+    getAudioContext();
+    if (audioCtx && audioCtx.state === 'suspended') return audioCtx.resume();
+  } catch (e) {}
+};
 // 所有播放音效應連到此節點（經 master 再輸出），錄製時可從 master 分接
 function getAudioDestination() {
   getAudioContext();
@@ -3343,6 +3350,10 @@ function mouseReleased() {
 }
 
 function touchStarted() {
+  var wrap = document.getElementById('intro-wrap');
+  if (wrap && wrap.style.display !== 'none' && document.body.classList.contains('intro-active')) {
+    return false; // intro 顯示時不處理觸控，避免觸發遊戲音效且讓 intro overlay 能收到 touch
+  }
   if (touches.length > 0) {
     pointerPressed(touches[0].x, touches[0].y);
   }
