@@ -137,7 +137,7 @@
     document.body.classList.remove('intro-active');
   }
 
-  video.addEventListener('canplaythrough', function onCanPlay() {
+  function onVideoReady() {
     if (videoScreen.classList.contains('visible')) return;
     var elapsed = Date.now() - loadingStartTime;
     var wait = Math.max(0, MIN_LOADING_MS - elapsed);
@@ -145,7 +145,12 @@
       if (videoScreen.classList.contains('visible')) return;
       showVideoScreen();
     }, wait);
-  }, { once: true });
+  }
+
+  // 桌機多半會觸發 canplaythrough，但在某些手機瀏覽器上不一定可靠
+  // 因此同時監聽 loadeddata 作為備援，避免永遠卡在 loading 畫面
+  video.addEventListener('canplaythrough', onVideoReady, { once: true });
+  video.addEventListener('loadeddata', onVideoReady, { once: true });
 
   video.addEventListener('timeupdate', checkPausePoint);
   video.addEventListener('ended', onVideoEnded);
