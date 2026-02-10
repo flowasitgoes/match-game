@@ -22,8 +22,11 @@
   ];
   var continueHint = pauseOverlay ? pauseOverlay.querySelector('.continue-hint') : null;
   var startHint = clickToStart ? clickToStart.querySelector('.start-hint') : null;
+  var entranceClickIcon = clickToStart ? clickToStart.querySelector('.entrance-click-icon') : null;
   var startBtnWrap = document.getElementById('intro-start-btn-wrap');
   var startBtn = document.getElementById('intro-start-btn');
+  var volumeBtn = document.getElementById('intro-volume-btn');
+  var volumeBtnIcon = volumeBtn ? volumeBtn.querySelector('i') : null;
 
   var loadingStartTime = Date.now();
   var pauseIndex = 0;
@@ -32,11 +35,42 @@
   var clickSound = new Audio('/public/click-sound.mp3');
   clickSound.volume = 1;
   var clickSoundGain = 1.8;
+  var beforeStartSong = new Audio('/public/game-before-start-song.mp3');
+  beforeStartSong.loop = true;
+
+  function startBeforeStartSong() {
+    beforeStartSong.currentTime = 0;
+    beforeStartSong.play().catch(function () {});
+    if (volumeBtn) {
+      volumeBtn.classList.add('sound-on');
+      volumeBtn.setAttribute('title', '音樂播放中');
+      volumeBtn.setAttribute('aria-label', '音樂播放中');
+      if (volumeBtnIcon) {
+        volumeBtnIcon.classList.remove('fa-volume-xmark');
+        volumeBtnIcon.classList.add('fa-volume-high');
+      }
+    }
+  }
 
   function showVideoScreen() {
     loading.style.display = 'none';
     videoScreen.classList.add('visible');
     clickToStart.classList.add('visible');
+    beforeStartSong.currentTime = 0;
+    beforeStartSong.play().catch(function () {});
+  }
+
+  if (volumeBtn) {
+    volumeBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      startBeforeStartSong();
+    });
+    volumeBtn.addEventListener('touchend', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      startBeforeStartSong();
+    }, { passive: false });
   }
 
   function startPlayback() {
@@ -111,6 +145,9 @@
   video.addEventListener('ended', onVideoEnded);
 
   function playClickSoundThenStart() {
+    beforeStartSong.pause();
+    beforeStartSong.currentTime = 0;
+    if (volumeBtn) volumeBtn.classList.add('hidden');
     if (startHint) startHint.classList.add('playing');
     var ctx = null;
     try {
@@ -160,6 +197,19 @@
     e.preventDefault();
     playClickSoundThenStart();
   });
+  if (entranceClickIcon) {
+    entranceClickIcon.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      playClickSoundThenStart();
+    });
+    entranceClickIcon.addEventListener('touchend', function (e) {
+      if (wrap.style.display === 'none' || !clickToStart.classList.contains('visible')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      playClickSoundThenStart();
+    }, { passive: false, capture: true });
+  }
 
   function doResumeAfterClickSound() {
     var okBtns;
