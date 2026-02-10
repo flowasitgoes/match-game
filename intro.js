@@ -37,6 +37,8 @@
   var clickSoundGain = 1.8;
   var beforeStartSong = new Audio('/public/game-before-start-song.mp3');
   beforeStartSong.loop = true;
+  var aboutToStartSong = new Audio('/public/game-about-to-start.mp3');
+  aboutToStartSong.loop = true;
 
   function startBeforeStartSong() {
     beforeStartSong.currentTime = 0;
@@ -124,6 +126,10 @@
     pauseOverlay.classList.remove('visible');
     hideAllDialogues();
     startBtnWrap.classList.add('visible');
+    beforeStartSong.pause();
+    beforeStartSong.currentTime = 0;
+    aboutToStartSong.currentTime = 0;
+    aboutToStartSong.play().catch(function () {});
   }
 
   function hideIntro() {
@@ -326,6 +332,8 @@
   }
 
   function playClickSoundThenGoToGame() {
+    aboutToStartSong.pause();
+    aboutToStartSong.currentTime = 0;
     startBtn.classList.add('vertical-overlap');
     var ctx = null;
     try {
