@@ -27,7 +27,7 @@
   var startBtn = document.getElementById('intro-start-btn');
   var volumeBtn = document.getElementById('intro-volume-btn');
   var volumeBtnIcon = volumeBtn ? volumeBtn.querySelector('i') : null;
-// mobile 優化 02/10, 改個什麼覆蓋
+// mobile 優化 02/10, 改個什麼覆蓋, 手機poster覆蓋用
   var loadingStartTime = Date.now();
   var pauseIndex = 0;
   var hasUnmuted = false;
