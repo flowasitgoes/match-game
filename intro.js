@@ -40,10 +40,68 @@
   var aboutToStartSong = new Audio('/public/game-about-to-start.mp3');
   aboutToStartSong.loop = true;
   var audioUnlocked = false;
+  var pauseAudioCtx = null;
+  var pauseSoundBuffer = null;
+
+  function ensurePauseAudioContext() {
+    if (pauseAudioCtx || !(window.AudioContext || window.webkitAudioContext)) return;
+    try {
+      pauseAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      pauseAudioCtx = null;
+    }
+  }
+
+  function loadPauseSoundBuffer() {
+    ensurePauseAudioContext();
+    if (!pauseAudioCtx || pauseSoundBuffer) return;
+    fetch('/public/pause-sound-1.mp3')
+      .then(function (res) { return res.arrayBuffer(); })
+      .then(function (buf) {
+        return pauseAudioCtx.decodeAudioData(buf);
+      })
+      .then(function (decoded) {
+        pauseSoundBuffer = decoded;
+      })
+      .catch(function () {
+        // 靜默失敗，之後會退回 HTMLAudio 播放
+      });
+  }
+
+  function playPauseSound() {
+    // 優先使用已解鎖的 Web Audio，較符合 iOS Safari 規則
+    if (pauseAudioCtx && pauseSoundBuffer) {
+      try {
+        if (pauseAudioCtx.state === 'suspended') {
+          pauseAudioCtx.resume().catch(function () {});
+        }
+        var src = pauseAudioCtx.createBufferSource();
+        src.buffer = pauseSoundBuffer;
+        var gainNode = pauseAudioCtx.createGain();
+        gainNode.gain.value = 1;
+        src.connect(gainNode);
+        gainNode.connect(pauseAudioCtx.destination);
+        src.start(0);
+        return;
+      } catch (e) {
+        // 若 Web Audio 播放失敗，改用 HTMLAudio
+      }
+    }
+    // 備援：維持原本的 HTMLAudio 播放方式
+    try {
+      pauseSound.currentTime = 0;
+      var p = pauseSound.play();
+      if (p && typeof p.catch === 'function') {
+        p.catch(function () {});
+      }
+    } catch (e2) {}
+  }
 
   function unlockAllAudioOnce() {
     if (audioUnlocked) return;
     audioUnlocked = true;
+    ensurePauseAudioContext();
+    loadPauseSoundBuffer();
     [pauseSound, clickSound, beforeStartSong, aboutToStartSong].forEach(function (audio) {
       if (!audio) return;
       var originalVolume = audio.volume;
@@ -140,8 +198,7 @@
     var target = PAUSE_POINTS[pauseIndex];
     if (t >= target - PAUSE_TOLERANCE) {
       video.pause();
-      pauseSound.currentTime = 0;
-      pauseSound.play().catch(function () {});
+      playPauseSound();
       if (dialogueEls[pauseIndex]) dialogueEls[pauseIndex].classList.add('visible');
       pauseIndex += 1;
     }
