@@ -27,7 +27,7 @@
   var startBtn = document.getElementById('intro-start-btn');
   var volumeBtn = document.getElementById('intro-volume-btn');
   var volumeBtnIcon = volumeBtn ? volumeBtn.querySelector('i') : null;
-
+// mobile 優化 02/10
   var loadingStartTime = Date.now();
   var pauseIndex = 0;
   var hasUnmuted = false;
