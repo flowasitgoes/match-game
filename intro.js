@@ -152,6 +152,13 @@
   video.addEventListener('canplaythrough', onVideoReady, { once: true });
   video.addEventListener('loadeddata', onVideoReady, { once: true });
 
+  // 最後保險機制：若影片事件完全沒被觸發（某些手機節省流量不預載影片），
+  // 在一段安全時間後仍強制切到影片畫面，至少讓使用者看到「天空很美」提示與開始按鈕
+  setTimeout(function () {
+    if (videoScreen.classList.contains('visible')) return;
+    showVideoScreen();
+  }, MIN_LOADING_MS + 4000);
+
   video.addEventListener('timeupdate', checkPausePoint);
   video.addEventListener('ended', onVideoEnded);
 
