@@ -39,8 +39,46 @@
   beforeStartSong.loop = true;
   var aboutToStartSong = new Audio('/public/game-about-to-start.mp3');
   aboutToStartSong.loop = true;
+  var audioUnlocked = false;
+
+  function unlockAllAudioOnce() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+    [pauseSound, clickSound, beforeStartSong, aboutToStartSong].forEach(function (audio) {
+      if (!audio) return;
+      var originalVolume = audio.volume;
+      // 將解鎖用的播放音量壓低，避免突然的爆音
+      audio.volume = 0.01;
+      audio.muted = false;
+      try {
+        var playPromise = audio.play();
+        if (playPromise && typeof playPromise.then === 'function') {
+          playPromise.then(function () {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = originalVolume;
+          }).catch(function () {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = originalVolume;
+          });
+        } else {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.volume = originalVolume;
+        }
+      } catch (e) {
+        try {
+          audio.pause();
+          audio.currentTime = 0;
+          audio.volume = originalVolume;
+        } catch (e2) {}
+      }
+    });
+  }
 
   function startBeforeStartSong() {
+    unlockAllAudioOnce();
     beforeStartSong.currentTime = 0;
     beforeStartSong.play().catch(function () {});
     if (volumeBtn) {
@@ -163,6 +201,7 @@
   video.addEventListener('ended', onVideoEnded);
 
   function playClickSoundThenStart() {
+    unlockAllAudioOnce();
     beforeStartSong.pause();
     beforeStartSong.currentTime = 0;
     if (volumeBtn) volumeBtn.classList.add('hidden');
@@ -240,6 +279,7 @@
   }
 
   function playClickSoundLouderThenResume() {
+    unlockAllAudioOnce();
     var okBtns;
     if (continueHint) continueHint.classList.add('playing');
     okBtns = document.querySelectorAll('.intro-dialogue-ok');
@@ -344,6 +384,7 @@
   }
 
   function playClickSoundThenGoToGame() {
+    unlockAllAudioOnce();
     aboutToStartSong.pause();
     aboutToStartSong.currentTime = 0;
     startBtn.classList.add('vertical-overlap');
