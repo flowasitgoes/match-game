@@ -3001,7 +3001,7 @@ function drawWinConditionHint() {
   const levelIndices = getLevelTypeIndices(currentLevel);
   const names = levelIndices.map(function (i) { const t = ITEM_TYPES[i]; return t && t.name != null ? t.name : '?'; }).join('、');
   const gridLabel = gridCols === 2 ? '2×5' : '3×3';
-  const hintText = '過關：9 櫃（3×3） 每櫃 3 格需「全部同一種」）';
+  const hintText = '過關：9 櫃（3×3） 每櫃 3 格需\n「全部同一種」';
 
   if (winConditionHintLastText !== hintText) {
     winConditionHintEl.elt.textContent = hintText;
