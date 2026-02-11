@@ -4,6 +4,7 @@
   "routes": [
     {"src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|mp3|json))", "dest": "/$1"},
     {"src": "/public/(.*)", "dest": "/public/$1"},
+    {"src": "/game", "dest": "/privacy-policy.html"},
     {"src": "/game", "dest": "/game.html"},
     {"src": "/(.*)", "dest": "/index.html"}
   ]
