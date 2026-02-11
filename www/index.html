@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <link rel="icon" type="image/png" href="/public/SEO/match-favicon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/public/SEO/match-32x32.png" />
+  <link rel="apple-touch-icon" sizes="192x192" href="/public/SEO/match-192x192.png" />
+  <link rel="apple-touch-icon" sizes="512x512" href="/public/SEO/match-512x512.png" />
+  <title>小蛋配對 Egg Cute｜療癒系九宮格配對遊戲</title>
+  <meta name="description" content="小蛋配對（Egg Cute）— 日本療癒風九宮格配對遊戲。可愛圖案與音效、溫和畫面，適合親子、媽咪與年長者。像整理書櫃與貼紙一樣的減壓小遊戲，放鬆玩。" />
+  <meta name="keywords" content="小蛋配對, Egg Cute, 療癒遊戲, 配對遊戲, 九宮格遊戲, 減壓遊戲, 親子遊戲, 可愛遊戲, 日本風, 舒壓, 放鬆遊戲, cute puzzle, healing game, match game" />
+  <meta name="theme-color" content="#7aaaff" />
+  <meta name="application-name" content="小蛋配對" />
+  <meta property="og:title" content="小蛋配對 Egg Cute｜療癒系配對遊戲" />
+  <meta property="og:description" content="小蛋配對（Egg Cute）— 日本療癒風九宮格配對遊戲。可愛圖案與音效、溫和畫面，適合親子、媽咪與年長者。像整理書櫃與貼紙一樣的減壓小遊戲，放鬆玩。" />
+  <meta property="og:image" content="/public/SEO/match-1200x630.png" />
+  <meta property="og:url" content="/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:locale:alternate" content="en" />
+  <meta property="og:site_name" content="小蛋配對" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="小蛋配對 Egg Cute｜療癒系配對遊戲" />
+  <meta name="twitter:description" content="小蛋配對（Egg Cute）— 日本療癒風九宮格配對遊戲。可愛圖案與音效、溫和畫面，適合親子、媽咪與年長者。像整理書櫃與貼紙一樣的減壓小遊戲，放鬆玩。" />
+  <meta name="twitter:image" content="/public/SEO/match-1200x630.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      -webkit-tap-highlight-color: transparent;
+      font-family: 'Nunito', sans-serif;
+    }
+    body {
+      /* background: linear-gradient(180deg, #f5faf2 0%, #faf5eb 100%); */
+    }
+    /* --- Intro 入口：Loading + 宣傳影片 --- */
+    #intro-wrap {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background-color: #f5faf2;
+      background-image: url('/public/loading-background.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+      min-height: 100vh;
+      min-height: 100dvh;
+      transition: opacity 0.45s ease-out;
+    }
+    #intro-wrap.intro-fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #intro-loading {
+      position: absolute;
+      inset: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      box-sizing: border-box;
+    }
+    .intro-loading-inner {
+      position: absolute;
+      top: 42%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+    #intro-loading-dots {
+      position: relative;
+      width: 100px;
+      height: 120px;
+      margin-top: 14px;
+    }
+    #intro-loading-dots::before {
+      content: '';
+      position: absolute;
+      top: 120px;
+      right: -15px;
+      bottom: -15px;
+      left: -15px;
+      border-radius: 50%;
+      border: 2px solid rgba(122, 170, 255, 0.25);
+      animation: intro-pulse-ring 1.8s ease-in-out infinite;
+    }
+    #intro-loading-dots::after {
+      content: 'loading...';
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #50463c;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    #intro-loading-dots .dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      margin-left: -9px;
+      margin-top: -9px;
+      border-radius: 50%;
+      transform-origin: 50% 51px;
+      animation: intro-orbit 2.2s linear infinite;
+      box-shadow: 0 0 14px currentColor, 0 0 28px currentColor;
+    }
+    #intro-loading-dots .dot:nth-child(1) { animation-delay: 0s; background: #7aaaff; color: #7aaaff; }
+    #intro-loading-dots .dot:nth-child(2) { animation-delay: -0.44s; background: #ff9a7a; color: #ff9a7a; }
+    #intro-loading-dots .dot:nth-child(3) { animation-delay: -0.88s; background: #7a5ae8; color: #7a5ae8; }
+    #intro-loading-dots .dot:nth-child(4) { animation-delay: -1.32s; background: #7dd3a8; color: #7dd3a8; }
+    #intro-loading-dots .dot:nth-child(5) { animation-delay: -1.76s; background: #f5c6a8; color: #f5c6a8; }
+    @keyframes intro-orbit {
+      from { transform: rotate(0deg) translateY(-42px); }
+      to { transform: rotate(360deg) translateY(-42px); }
+    }
+    @keyframes intro-pulse-ring {
+      0%, 100% { opacity: 0.4; transform: scale(0.95); border-color: rgba(122, 170, 255, 0.2); }
+      50% { opacity: 1; transform: scale(1.05); border-color: rgba(122, 170, 255, 0.5); }
+    }
+    #intro-video-screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+    }
+    #intro-video-screen.visible {
+      display: block;
+    }
+    #intro-video-screen video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: contain;
+      pointer-events: none;
+    }
+    #intro-click-to-start {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    #intro-click-to-start.visible {
+      display: flex;
+    }
+    .start-hint-wrap {
+      position: relative;
+      display: inline-block;
+    }
+    .entrance-click-icon {
+      position: absolute;
+      right: -75px;
+      top: -33px;
+      width: 148px;
+      height: auto;
+      z-index: 2;
+      cursor: pointer;
+      animation: entrance-icon-pulse 1.5s ease-in-out infinite;
+    }
+    .entrance-click-icon img {
+      display: block;
+      width: 100%;
+      height: auto;
+      vertical-align: top;
+    }
+    @keyframes entrance-icon-pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+    #intro-click-to-start .start-hint {
+      padding: 20px 48px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: #1a1a1a;
+      background: #ede89b;
+      border-radius: 42px 16px 6px 4px;
+      box-shadow: inset 0 0 0 2px #60daaa;
+      position: relative;
+      box-sizing: border-box;
+      transition: color 0.25s;
+      z-index: 1;
+      cursor: pointer;
+      display: inline-block;
+    }
+    #intro-click-to-start .start-hint::before,
+    #intro-click-to-start .start-hint::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      box-sizing: inherit;
+      border-radius: 999px;
+      z-index: -1;
+    }
+    #intro-click-to-start .start-hint::before {
+      border: 1em solid transparent;
+    }
+    #intro-click-to-start .start-hint::after {
+      border: 0 solid transparent;
+      mix-blend-mode: color-dodge;
+    }
+    #intro-click-to-start .start-hint.playing {
+      color: #fff;
+      font-weight: 700;
+    }
+    #intro-click-to-start .start-hint.playing::before {
+      background: #60daaa;
+      border-top-color: #60daaa;
+      border-right-color: #60daaa;
+      border-bottom-color: #60daaa;
+      transition:
+        background 0s linear 0.4s,
+        border-top-color 0.15s linear,
+        border-right-color 0.15s linear 0.15s,
+        border-bottom-color 0.15s linear 0.25s;
+    }
+    #intro-click-to-start .start-hint.playing::after {
+      border-top: 1em solid #60daaa;
+      border-left-width: 1em;
+      border-right-width: 1em;
+      transform: rotate(540deg);
+      transition:
+        transform 0.4s linear 0s,
+        border-left-width 0s linear 0.35s;
+    }
+    #intro-click-to-start .start-hint:hover {
+      filter: brightness(1.08);
+    }
+    #intro-volume-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 10001;
+      width: 48px;
+      height: 48px;
+      border: none;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: #50463c;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+      -webkit-tap-highlight-color: transparent;
+    }
+    #intro-volume-btn:hover {
+      filter: brightness(1.05);
+    }
+    #intro-volume-btn.sound-on {
+      color: #60daaa;
+    }
+    #intro-volume-btn.hidden {
+      display: none;
+    }
+    #intro-pause-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgb(201 162 162 / 50%);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    #intro-pause-overlay.visible {
+      display: flex;
+    }
+    #intro-pause-overlay .continue-hint {
+      padding: 20px 30px;
+      font-size: 36px;
+      background: rgb(215 255 196 / 95%);
+      color: #50463c;
+      border-radius: 999px;
+      box-shadow: inset 0 0 0 2px #60daaa;
+      position: relative;
+      box-sizing: border-box;
+      transition: color 0.25s;
+      z-index: 1;
+    }
+    #intro-pause-overlay .continue-hint::before,
+    #intro-pause-overlay .continue-hint::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      box-sizing: inherit;
+      border-radius: 999px;
+      z-index: -1;
+    }
+    #intro-pause-overlay .continue-hint::before {
+      border: 1.5em solid transparent;
+    }
+    #intro-pause-overlay .continue-hint::after {
+      border: 0 solid transparent;
+      mix-blend-mode: color-dodge;
+    }
+    #intro-pause-overlay .continue-hint.playing {
+      color: #fff;
+      font-weight: 700;
+    }
+    #intro-pause-overlay .continue-hint.playing::before {
+      background: #60daaa;
+      border-top-color: #60daaa;
+      border-right-color: #60daaa;
+      border-bottom-color: #60daaa;
+      transition:
+        background 0s linear 0.4s,
+        border-top-color 0.15s linear,
+        border-right-color 0.15s linear 0.15s,
+        border-bottom-color 0.15s linear 0.25s;
+    }
+    #intro-pause-overlay .continue-hint.playing::after {
+      border-top: 1.5em solid #60daaa;
+      border-left-width: 1.5em;
+      border-right-width: 1.5em;
+      transform: rotate(270deg);
+      transition:
+        transform 0.4s linear 0s,
+        border-left-width 0s linear 0.35s;
+    }
+    /* 對話框 overlay（6s / 12s / 22s / 42s / 52s / 58s 共用） */
+    [id^="intro-dialogue-"] {
+      position: absolute;
+      inset: 0;
+      background: rgb(201 162 162 / 50%);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      touch-action: manipulation;
+    }
+    [id^="intro-dialogue-"].visible {
+      display: flex;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-box {
+      position: absolute;
+      border: 10px solid transparent;
+      padding: 0;
+      border-image: url(/public/border-image.png) 30 round;
+      background: #fff;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+    }
+    #intro-dialogue-6s .intro-dialogue-box { left: 100px; }
+    #intro-dialogue-12s .intro-dialogue-box { left: 40px; bottom: 115px; }
+    #intro-dialogue-22s .intro-dialogue-box { right: 40px; }
+    #intro-dialogue-42s .intro-dialogue-box { left: 40px; }
+    #intro-dialogue-58s .intro-dialogue-box { right: 0; top: 128px; }
+    [id^="intro-dialogue-"] .intro-dialogue-inner {
+      border: 2px solid #fff;
+      background: #8269a1;
+      padding: 24px 32px;
+      min-width: 280px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-text {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      flex: 1 1 auto;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok {
+      padding: 10px 24px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: #1a1a1a;
+      background: #9bedce;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      flex-shrink: 0;
+      position: relative;
+      box-sizing: border-box;
+      box-shadow: inset 0 0 0 2px #60daaa;
+      transition: color 0.25s;
+      z-index: 1;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok::before,
+    [id^="intro-dialogue-"] .intro-dialogue-ok::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      box-sizing: inherit;
+      border-radius: 999px;
+      z-index: -1;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok::before {
+      border: 1em solid transparent;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok::after {
+      border: 0 solid transparent;
+      mix-blend-mode: color-dodge;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok.playing {
+      color: #fff;
+      font-weight: 700;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok.playing::before {
+      background: #60daaa;
+      border-top-color: #60daaa;
+      border-right-color: #60daaa;
+      border-bottom-color: #60daaa;
+      transition:
+        background 0s linear 0.4s,
+        border-top-color 0.15s linear,
+        border-right-color 0.15s linear 0.15s,
+        border-bottom-color 0.15s linear 0.25s;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok.playing::after {
+      border-top: 1em solid #60daaa;
+      border-left-width: 1em;
+      border-right-width: 1em;
+      transform: rotate(540deg);
+      transition:
+        transform 0.4s linear 0s,
+        border-left-width 0s linear 0.35s;
+    }
+    [id^="intro-dialogue-"] .intro-dialogue-ok:hover {
+      filter: brightness(1.08);
+    }
+    #intro-start-btn-wrap {
+      position: absolute;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.4);
+    }
+    #intro-start-btn-wrap.visible {
+      display: flex;
+    }
+    #intro-start-btn {
+      position: relative;
+      overflow: hidden;
+      padding: 18px 48px;
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: #fff;
+      background: linear-gradient(135deg, #7aaaff 0%, #7a5ae8 100%);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(122, 90, 232, 0.4);
+    }
+    #intro-start-btn span {
+      position: relative;
+      z-index: 1;
+    }
+    /* Vertical Overlap：點擊時上下四條帶從邊緣往中間疊合 */
+    #intro-start-btn::before,
+    #intro-start-btn::after,
+    #intro-start-btn span::before,
+    #intro-start-btn span::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 0;
+      background: rgba(0, 0, 0, 0.2);
+      transition: height 0.4s ease-in-out;
+    }
+    #intro-start-btn::before { top: 0; }
+    #intro-start-btn::after { top: auto; bottom: 0; }
+    #intro-start-btn span::before { top: auto; bottom: 0; }
+    #intro-start-btn span::after { top: 0; }
+    #intro-start-btn span::before,
+    #intro-start-btn span::after {
+      transition-delay: 0.4s;
+    }
+    #intro-start-btn.vertical-overlap::before,
+    #intro-start-btn.vertical-overlap::after,
+    #intro-start-btn.vertical-overlap span::before,
+    #intro-start-btn.vertical-overlap span::after {
+      height: 100%;
+    }
+    #intro-start-btn:hover {
+      filter: brightness(1.08);
+    }
+  </style>
+</head>
+<body>
+  <div id="intro-wrap">
+    <button type="button" id="intro-volume-btn" class="intro-volume-btn" title="開啟音樂" aria-label="開啟音樂">
+      <i class="fa-solid fa-volume-xmark"></i>
+    </button>
+    <div id="intro-loading">
+      <div class="intro-loading-inner">
+        <div id="intro-loading-dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </div>
+    <div id="intro-video-screen">
+      <video id="intro-video" playsinline preload="auto" muted poster="/public/video-fall-back-poster.png">
+        <source src="/public/eggcute-promo-final-video-02092026-(11).mp4" type="video/mp4" />
+      </video>
+      <div id="intro-click-to-start">
+        <div class="start-hint-wrap">
+          <span class="start-hint">呼~ 今天的天空真美啊~!</span>
+          <span class="entrance-click-icon" aria-hidden="true">
+            <img src="/public/entrance-click-icon.png" alt="" />
+          </span>
+        </div>
+      </div>
+      <div id="intro-pause-overlay">
+        <span class="continue-hint" aria-label="點擊繼續"><i class="fa-regular fa-hand-pointer" aria-hidden="true"></i></span>
+      </div>
+      <div id="intro-dialogue-6s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">準備好了嗎，伙計？</span>
+            <button type="button" class="intro-dialogue-ok">ok</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-12s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">哇...好香哦!</span>
+            <button type="button" class="intro-dialogue-ok">Yes</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-22s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">太好了^^</span>
+            <button type="button" class="intro-dialogue-ok">Go</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-42s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">沒關係呦~</span>
+            <button type="button" class="intro-dialogue-ok">好唷!</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-52s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">太好了</span>
+            <button type="button" class="intro-dialogue-ok">Good</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-58s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">那可對極了!</span>
+            <button type="button" class="intro-dialogue-ok">是吧!!</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-start-btn-wrap">
+        <button type="button" id="intro-start-btn"><span>開始遊戲</span></button>
+      </div>
+    </div>
+  </div>
+  <script src="intro.js"></script>
+</body>
+</html>

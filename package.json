@@ -5,6 +5,11 @@
     "start": "serve -l 3006"
   },
   "devDependencies": {
+    "@capacitor/cli": "^8.0.2",
+    "@capacitor/core": "^8.0.2",
     "serve": "^14.2.0"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.2"
   }
 }
