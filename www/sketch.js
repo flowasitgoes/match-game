@@ -1539,18 +1539,20 @@ function getGameCanvasSize() {
 
 function enableSound() {
   soundEnabled = true;
+  // 立即更新靜音按鈕為 🔊，避免 mobile 上 ctx.resume() 非同步導致按鈕不更新
+  if (soundBarDiv && soundBarDiv.elt) {
+    var row = soundBarDiv.elt.querySelector('.sound-btn-row');
+    var firstBtn = row ? row.querySelector('button') : soundBarDiv.elt.querySelector('button');
+    if (firstBtn) {
+      firstBtn.textContent = '🔊';
+      firstBtn.disabled = false;
+      firstBtn.style.opacity = '1';
+    }
+  }
   try {
     const ctx = getAudioContext();
     const onReady = function () {
       playTone(440, 0.1, 'sine', 0.12);
-      if (soundBarDiv && soundBarDiv.elt) {
-        const btn = soundBarDiv.elt.querySelector('button');
-        if (btn) {
-          btn.textContent = '🔊';
-          btn.disabled = false;
-          btn.style.opacity = '1';
-        }
-      }
     };
     if (ctx.state === 'suspended') {
       ctx.resume().then(onReady).catch(function (e) {
@@ -1866,7 +1868,8 @@ function setup() {
   const btn = createButton('🔇');
   btn.class('sound-toggle-btn');
   btn.parent(soundBtnRow);
-  btn.elt.addEventListener('click', function () {
+  btn.elt.addEventListener('click', function (e) {
+    e.preventDefault();
     if (soundEnabled) {
       soundEnabled = false;
       btn.elt.textContent = '🔇';
@@ -1876,6 +1879,17 @@ function setup() {
       enableSound();
     }
   });
+  btn.elt.addEventListener('touchend', function (e) {
+    e.preventDefault();
+    if (soundEnabled) {
+      soundEnabled = false;
+      btn.elt.textContent = '🔇';
+      btn.elt.style.opacity = '1';
+      btn.elt.disabled = false;
+    } else {
+      enableSound();
+    }
+  }, { passive: false });
 
   const downloadMusicBtn = createButton('📥');
   downloadMusicBtn.class('sound-toggle-btn');
