@@ -25,6 +25,7 @@
   var entranceClickIcon = clickToStart ? clickToStart.querySelector('.entrance-click-icon') : null;
   var startBtnWrap = document.getElementById('intro-start-btn-wrap');
   var startBtn = document.getElementById('intro-start-btn');
+  var skipBtn = document.getElementById('intro-skip-btn');
   var volumeBtn = document.getElementById('intro-volume-btn');
   var volumeBtnIcon = volumeBtn ? volumeBtn.querySelector('i') : null;
 // mobile 優化 02/10, 改個什麼覆蓋, 手機poster覆蓋用
@@ -183,6 +184,7 @@
     if (window.resumeGameAudioContext) window.resumeGameAudioContext();
     unmuteOnInteraction();
     clickToStart.classList.remove('visible');
+    if (skipBtn) skipBtn.style.display = 'inline-flex';
     video.play().catch(function () {});
   }
 
@@ -439,7 +441,24 @@
       window.location.replace('./game.html');
     }, { once: true });
   }
-  
+
+  function skipIntroAndGoToGame() {
+    if (!wrap || wrap.style.display === 'none') return;
+    try {
+      video.pause();
+    } catch (e) {}
+    hideAllDialogues();
+    if (pauseOverlay) pauseOverlay.classList.remove('visible');
+    try {
+      beforeStartSong.pause();
+      beforeStartSong.currentTime = 0;
+    } catch (e2) {}
+    try {
+      aboutToStartSong.pause();
+      aboutToStartSong.currentTime = 0;
+    } catch (e3) {}
+    fadeOutThenGoToGame();
+  }
 
   function playClickSoundThenGoToGame() {
     unlockAllAudioOnce();
@@ -494,4 +513,22 @@
     e.preventDefault();
     playClickSoundThenGoToGame();
   });
+
+  if (skipBtn) {
+    var onSkip = function (e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      skipBtn.disabled = true;
+      skipIntroAndGoToGame();
+    };
+    skipBtn.addEventListener('click', onSkip);
+    skipBtn.addEventListener('touchend', function (e) {
+      if (wrap.style.display === 'none') return;
+      e.preventDefault();
+      e.stopPropagation();
+      onSkip();
+    }, { passive: false, capture: true });
+  }
 })();

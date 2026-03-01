@@ -281,6 +281,27 @@
     #intro-volume-btn.hidden {
       display: none;
     }
+    #intro-skip-btn {
+      position: absolute;
+      right: 16px;
+      bottom: 16px;
+      z-index: 10001;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Nunito', sans-serif;
+      color: #50463c;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+      -webkit-tap-highlight-color: transparent;
+      display: none;
+    }
+    #intro-skip-btn:hover {
+      filter: brightness(1.05);
+    }
     #intro-pause-overlay {
       position: absolute;
       inset: 0;
@@ -598,6 +619,7 @@
       <div id="intro-start-btn-wrap">
         <button type="button" id="intro-start-btn"><span>開始遊戲</span></button>
       </div>
+      <button type="button" id="intro-skip-btn">Skip 影片</button>
     </div>
   </div>
   <script src="intro.js"></script>
