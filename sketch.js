@@ -896,6 +896,63 @@ function getAudioDestination() {
 }
 
 // --- 錄製整場遊玩配樂（從第一次拖曳開始）---
+// 將錄好的 Blob（webm/mp4）解碼成 PCM 再編成 MP3，回傳 Promise<Blob>；失敗時 reject。
+function convertRecordedBlobToMp3(blob, ctx) {
+  if (!ctx || typeof ctx.decodeAudioData !== 'function') {
+    return Promise.reject(new Error('No decodeAudioData'));
+  }
+  if (typeof lamejs === 'undefined' || !lamejs.Mp3Encoder) {
+    return Promise.reject(new Error('lamejs not loaded'));
+  }
+  return blob.arrayBuffer().then(function (arrayBuffer) {
+    return new Promise(function (resolve, reject) {
+      ctx.decodeAudioData(arrayBuffer, function (buffer) {
+        try {
+          var numCh = buffer.numberOfChannels;
+          var sampleRate = buffer.sampleRate;
+          var len = buffer.length;
+          var left = buffer.getChannelData(0);
+          var right = numCh > 1 ? buffer.getChannelData(1) : left;
+          // Float32 [-1,1] -> Int16
+          var left16 = new Int16Array(len);
+          var right16 = new Int16Array(len);
+          for (var i = 0; i < len; i++) {
+            var l = left[i] * 32768;
+            left16[i] = l < -32768 ? -32768 : l > 32767 ? 32767 : l | 0;
+            var r = right[i] * 32768;
+            right16[i] = r < -32768 ? -32768 : r > 32767 ? 32767 : r | 0;
+          }
+          var encoder = new lamejs.Mp3Encoder(numCh > 1 ? 2 : 1, sampleRate, 128);
+          var chunkSize = 1152;
+          var mp3Chunks = [];
+          for (var j = 0; j < len; j += chunkSize) {
+            var end = Math.min(j + chunkSize, len);
+            var leftChunk = left16.subarray(j, end);
+            var rightChunk = right16.subarray(j, end);
+            var mp3buf = encoder.encodeBuffer(leftChunk, rightChunk);
+            if (mp3buf.length > 0) mp3Chunks.push(mp3buf);
+          }
+          var last = encoder.flush();
+          if (last.length > 0) mp3Chunks.push(last);
+          var totalLen = 0;
+          for (var k = 0; k < mp3Chunks.length; k++) totalLen += mp3Chunks[k].length;
+          var merged = new Uint8Array(totalLen);
+          var offset = 0;
+          for (var k = 0; k < mp3Chunks.length; k++) {
+            merged.set(mp3Chunks[k], offset);
+            offset += mp3Chunks[k].length;
+          }
+          resolve(new Blob([merged], { type: 'audio/mpeg' }));
+        } catch (e) {
+          reject(e);
+        }
+      }, function (err) {
+        reject(err);
+      });
+    });
+  });
+}
+
 function startAudioRecording() {
   if (isRecordingAudio) return;
   try {
@@ -921,26 +978,38 @@ function startAudioRecording() {
       }
       isRecordingAudio = false;
       if (recordedChunks.length === 0) return;
-      // 依瀏覽器實際格式：Safari/iOS 為 audio/mp4，Chrome 等為 audio/webm
-      const mime = (mediaRecorder && mediaRecorder.mimeType) ? mediaRecorder.mimeType : 'audio/webm';
-      const blob = new Blob(recordedChunks, { type: mime });
-      const ext = (mime.indexOf('mp4') !== -1) ? (mime.indexOf('video/') === 0 ? '.mp4' : '.m4a') : '.webm';
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'gameplay-music' + ext;
-      // iOS Safari 不支援 download 屬性與程式觸發下載，改開新分頁讓使用者可「分享→儲存」
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      if (isIOS) {
-        a.target = '_blank';
-        a.rel = 'noopener';
-        window.open(url, '_blank');
-        setTimeout(function () { URL.revokeObjectURL(url); }, 60000);
-      } else {
-        a.click();
-        URL.revokeObjectURL(url);
-      }
+      var mime = (mediaRecorder && mediaRecorder.mimeType) ? mediaRecorder.mimeType : 'audio/webm';
+      var blob = new Blob(recordedChunks, { type: mime });
       recordedChunks = [];
+      var ctx = getAudioContext();
+      var doDownload = function (blobToUse, filename) {
+        var url = URL.createObjectURL(blobToUse);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      };
+      var fallbackExt = (mime.indexOf('mp4') !== -1) ? (mime.indexOf('video/') === 0 ? '.mp4' : '.m4a') : '.webm';
+      var downloadDone = false;
+      function doDownloadOnce(blobToUse, filename) {
+        if (downloadDone) return;
+        downloadDone = true;
+        doDownload(blobToUse, filename);
+      }
+      var timeout = setTimeout(function () {
+        doDownloadOnce(blob, 'gameplay-music' + fallbackExt);
+      }, 15000);
+      convertRecordedBlobToMp3(blob, ctx).then(function (mp3Blob) {
+        clearTimeout(timeout);
+        doDownloadOnce(mp3Blob, 'gameplay-music.mp3');
+      }).catch(function () {
+        clearTimeout(timeout);
+        doDownloadOnce(blob, 'gameplay-music' + fallbackExt);
+      });
     };
     mediaRecorder.start(1000);
     isRecordingAudio = true;
@@ -953,7 +1022,18 @@ function stopAudioRecordingAndDownload() {
   if (mediaRecorder && mediaRecorder.state === 'recording') {
     mediaRecorder.stop();
   } else if (!isRecordingAudio && (!recordedChunks || recordedChunks.length === 0)) {
-    if (typeof alert !== 'undefined') alert('尚無錄音，請先拖曳卡片開始遊玩後再下載。');
+    var msg = '尚無錄音，請先拖曳卡片開始遊玩後再下載。';
+    if (typeof alert !== 'undefined') alert(msg);
+    // 行動 / PWA 下 alert 可能不顯示，額外顯示頁內提示
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isMobile) {
+      var tip = document.createElement('div');
+      tip.textContent = msg;
+      tip.style.cssText = 'position:fixed;bottom:20px;left:16px;right:16px;z-index:2147483647;padding:14px 20px;background:#50463c;color:#fff;text-align:center;border-radius:12px;font-size:14px;line-height:1.4;box-shadow:0 4px 20px rgba(0,0,0,0.25);';
+      document.body.appendChild(tip);
+      setTimeout(function () { try { document.body.removeChild(tip); } catch (e) {} }, 4000);
+    }
   }
 }
 
@@ -1801,9 +1881,14 @@ function setup() {
   downloadMusicBtn.class('sound-toggle-btn');
   downloadMusicBtn.elt.title = '下載音樂檔';
   downloadMusicBtn.parent(soundBtnRow);
-  downloadMusicBtn.elt.addEventListener('click', function () {
+  downloadMusicBtn.elt.addEventListener('click', function (e) {
+    e.preventDefault();
     stopAudioRecordingAndDownload();
   });
+  downloadMusicBtn.elt.addEventListener('touchend', function (e) {
+    e.preventDefault();
+    stopAudioRecordingAndDownload();
+  }, { passive: false });
 
   const timeDisplayWrap = createDiv('');
   timeDisplayWrap.class('game-time-wrap');

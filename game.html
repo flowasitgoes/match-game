@@ -127,6 +127,7 @@
       top: 0;
       right: 0;
       z-index: 1;
+      pointer-events: auto;
       display: flex;
       justify-content: flex-end;
       align-items: center;
@@ -134,6 +135,11 @@
       gap: 12px 16px;
       padding: 8px 12px;
       background: transparent;
+    }
+    @media (max-width: 768px), (pointer: coarse) {
+      .sound-bar {
+        z-index: 50;
+      }
     }
     .icon-size-wrap {
       display: flex;
@@ -686,6 +692,7 @@
   </main>
   <link rel="stylesheet" href="erika-celebration.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
   <script src="sketch.js"></script>
 </body>
 </html>
