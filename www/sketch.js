@@ -1551,16 +1551,25 @@ function enableSound() {
   }
   try {
     const ctx = getAudioContext();
-    const onReady = function () {
-      playTone(440, 0.1, 'sine', 0.12);
-    };
+    // iOS Safari：resume() 與「開始播放」必須在使用者手勢的同步呼叫堆疊內完成，
+    // 否則會被擋。先同步呼叫 resume()，再在同一堆疊內建立並 start 解鎖音，不等待 .then()
     if (ctx.state === 'suspended') {
-      ctx.resume().then(onReady).catch(function (e) {
-        if (typeof console !== 'undefined' && console.warn) console.warn('enableSound resume:', e);
-        onReady();
-      });
-    } else {
-      onReady();
+      ctx.resume();
+    }
+    // 同步建立並播放短音（在同一次 touch/click 堆疊內），讓 iOS Safari 允許後續音效
+    try {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(getAudioDestination());
+      osc.frequency.value = 440;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.1);
+    } catch (e2) {
+      if (typeof console !== 'undefined' && console.warn) console.warn('enableSound unlock tone:', e2);
     }
   } catch (e) {
     if (typeof console !== 'undefined' && console.warn) console.warn('enableSound:', e);
