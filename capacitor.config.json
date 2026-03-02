@@ -1,5 +1,8 @@
 {
   "appId": "com.ifunlove.eggcute",
   "appName": "Egg Cute",
-  "webDir": "www"
+  "webDir": "www",
+  "server": {
+    "ignore": ["vercel.json"]
+  }
 }
