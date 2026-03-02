@@ -35,6 +35,7 @@
   var pauseSound = new Audio('./public/pause-sound-1.mp3');
   var clickSound = new Audio('./public/click-sound.mp3');
   clickSound.volume = 1;
+  var transitSound = new Audio('./public/cute-transit-sound-for-skip.mp3');
   var clickSoundGain = 1.8;
   var beforeStartSong = new Audio('./public/game-before-start-song.mp3');
   beforeStartSong.loop = true;
@@ -43,6 +44,41 @@
   var audioUnlocked = false;
   var pauseAudioCtx = null;
   var pauseSoundBuffer = null;
+
+  var DURATION_ANIMATION_CIRCLE = 2000;
+  var DURATION_ANIMATION_OPACITY = 400;
+  var GAME_URL = './game.html';
+
+  function createExpandingCircle(opts, onComplete) {
+    var x = opts.x != null ? opts.x : window.innerWidth / 2;
+    var y = opts.y != null ? opts.y : window.innerHeight / 2;
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var size = opts.size != null ? opts.size : 2 * Math.sqrt(w * w + h * h);
+    var wrapper = document.createElement('div');
+    wrapper.className = 'page-transition-circle-wrapper';
+    wrapper.style.setProperty('--animation-duration-circle', DURATION_ANIMATION_CIRCLE + 'ms');
+    wrapper.style.setProperty('--animation-duration-opacity', DURATION_ANIMATION_OPACITY + 'ms');
+    wrapper.style.setProperty('--animation-delay-glow', '60ms');
+    var glow = document.createElement('div');
+    glow.className = 'page-transition-circle-glow';
+    glow.style.left = x + 'px';
+    glow.style.top = y + 'px';
+    glow.style.width = size + 'px';
+    glow.style.height = size + 'px';
+    wrapper.appendChild(glow);
+    var circle = document.createElement('div');
+    circle.className = 'page-transition-circle';
+    circle.style.left = x + 'px';
+    circle.style.top = y + 'px';
+    circle.style.width = size + 'px';
+    circle.style.height = size + 'px';
+    wrapper.appendChild(circle);
+    document.body.appendChild(wrapper);
+    setTimeout(function () {
+      if (typeof onComplete === 'function') onComplete();
+    }, DURATION_ANIMATION_CIRCLE);
+  }
 
   function ensurePauseAudioContext() {
     if (pauseAudioCtx || !(window.AudioContext || window.webkitAudioContext)) return;
@@ -103,10 +139,10 @@
     audioUnlocked = true;
     ensurePauseAudioContext();
     loadPauseSoundBuffer();
-    [pauseSound, clickSound, beforeStartSong, aboutToStartSong].forEach(function (audio) {
+    // 只對「效果音」做 play-then-pause 解鎖，不要對 BGM 做，否則會把 volume 按鈕剛啟動的音樂立刻關掉
+    [pauseSound, clickSound].forEach(function (audio) {
       if (!audio) return;
       var originalVolume = audio.volume;
-      // 將解鎖用的播放音量壓低，避免突然的爆音
       audio.volume = 0.01;
       audio.muted = false;
       try {
@@ -133,6 +169,11 @@
           audio.volume = originalVolume;
         } catch (e2) {}
       }
+    });
+    // BGM 只設 muted=false，不 play-then-pause，避免與 volume 按鈕的 startBeforeStartSong() 衝突
+    [beforeStartSong, aboutToStartSong, transitSound].forEach(function (audio) {
+      if (!audio) return;
+      audio.muted = false;
     });
   }
 
@@ -442,8 +483,25 @@
     }, { once: true });
   }
 
-  function skipIntroAndGoToGame() {
+  function skipIntroAndGoToGame(clickEvent) {
     if (!wrap || wrap.style.display === 'none') return;
+    if (skipBtn) {
+      skipBtn.classList.add('skip-clicked');
+      skipBtn.disabled = true;
+    }
+    unlockAllAudioOnce();
+    try {
+      clickSound.currentTime = 0;
+      clickSound.volume = 1;
+      clickSound.play().catch(function () {});
+    } catch (e) {}
+    setTimeout(function () {
+      try {
+        transitSound.currentTime = 0;
+        transitSound.volume = 1;
+        transitSound.play().catch(function () {});
+      } catch (e2) {}
+    }, 180);
     try {
       video.pause();
     } catch (e) {}
@@ -457,7 +515,28 @@
       aboutToStartSong.pause();
       aboutToStartSong.currentTime = 0;
     } catch (e3) {}
-    fadeOutThenGoToGame();
+    if (wrap) {
+      wrap.classList.add('intro-fade-out-skip');
+      wrap.classList.add('intro-fade-out');
+    }
+    document.body.style.backgroundColor = '#fe7f70';
+    var x = window.innerWidth / 2;
+    var y = window.innerHeight / 2;
+    if (clickEvent) {
+      if (clickEvent.clientX != null && clickEvent.clientY != null) {
+        x = clickEvent.clientX;
+        y = clickEvent.clientY;
+      } else if (clickEvent.changedTouches && clickEvent.changedTouches[0]) {
+        x = clickEvent.changedTouches[0].clientX;
+        y = clickEvent.changedTouches[0].clientY;
+      }
+    }
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    var size = 2 * Math.sqrt(w * w + h * h);
+    createExpandingCircle({ x: x, y: y, size: size }, function () {
+      window.location.replace(GAME_URL);
+    });
   }
 
   function playClickSoundThenGoToGame() {
@@ -521,14 +600,14 @@
         e.stopPropagation();
       }
       skipBtn.disabled = true;
-      skipIntroAndGoToGame();
+      skipIntroAndGoToGame(e);
     };
     skipBtn.addEventListener('click', onSkip);
     skipBtn.addEventListener('touchend', function (e) {
       if (wrap.style.display === 'none') return;
       e.preventDefault();
       e.stopPropagation();
-      onSkip();
+      onSkip(e);
     }, { passive: false, capture: true });
   }
 })();

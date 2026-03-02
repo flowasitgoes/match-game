@@ -298,11 +298,68 @@
       box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
       -webkit-tap-highlight-color: transparent;
       display: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     }
     #intro-skip-btn:hover {
       filter: brightness(1.05);
     }
-    #intro-pause-overlay {
+    #intro-skip-btn:active,
+    #intro-skip-btn.skip-clicked {
+      transform: scale(0.96);
+      background: rgba(230, 240, 255, 0.98);
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    #intro-wrap.intro-fade-out-skip.intro-fade-out {
+      transition-duration: 0.6s;
+    }
+    /* Skip 換頁：圓形擴張過場（繽紛漸層 + 光暈） */
+    .page-transition-circle-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 99999;
+    }
+    .page-transition-circle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at center,
+        #ffd93d 0%,
+        #ffb347 18%,
+        #ff9a56 35%,
+        #f093fb 55%,
+        #a855f7 75%,
+        #7aaaff 92%,
+        #60daaa 100%
+      );
+      transform: translate(-50%, -50%) scale(0);
+      transition: opacity var(--animation-duration-opacity) ease-in-out;
+      animation: page-transition-circle-expand var(--animation-duration-circle) ease-out forwards;
+      box-shadow: 0 0 80px 20px rgba(255, 200, 100, 0.4);
+    }
+    .page-transition-circle-glow {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(
+        circle at center,
+        rgba(255, 220, 150, 0.7) 0%,
+        rgba(255, 150, 200, 0.5) 40%,
+        rgba(122, 170, 255, 0.35) 70%,
+        rgba(96, 218, 170, 0.2) 100%
+      );
+      transform: translate(-50%, -50%) scale(0);
+      transition: opacity var(--animation-duration-opacity) ease-in-out;
+      animation: page-transition-circle-expand var(--animation-duration-circle) ease-out forwards;
+      animation-delay: var(--animation-delay-glow, 60ms);
+    }
+    @keyframes page-transition-circle-expand {
+      to {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
       position: absolute;
       inset: 0;
       background: rgb(201 162 162 / 50%);
@@ -566,7 +623,7 @@
         </div>
       </div>
       <div id="intro-pause-overlay">
-        <span class="continue-hint" aria-label="點擊繼續"><i class="fa-regular fa-hand-pointer" aria-hidden="true"></i></span>
+        <!-- <span class="continue-hint" aria-label="點擊繼續"><i class="fa-regular fa-hand-pointer" aria-hidden="true"></i></span> -->
       </div>
       <div id="intro-dialogue-6s">
         <div class="intro-dialogue-box">
@@ -619,7 +676,7 @@
       <div id="intro-start-btn-wrap">
         <button type="button" id="intro-start-btn"><span>開始遊戲</span></button>
       </div>
-      <button type="button" id="intro-skip-btn">Skip 影片</button>
+      <button type="button" id="intro-skip-btn">skip / 跳過</button>
     </div>
   </div>
   <script src="intro.js"></script>
