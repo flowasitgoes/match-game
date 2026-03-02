@@ -303,11 +303,11 @@ const DRAG_HOVER_PRESETS = {
     f0: 255, f1: 370, f2: 480, vol: 0.068, dur: 0.07, attack: 0.012
   },
   '背景音樂': {
-    f0: 385, f1: 430, f2: 630, vol: 3.0, dur: 0.06, attack: 0.016
+    f0: 385, f1: 430, f2: 630, vol: 0.085, dur: 0.06, attack: 0.016
   }
 };
 // 背景音樂預設值（用於 UI「預設」還原）
-const BACKGROUND_MUSIC_DEFAULT = { f0: 385, f1: 430, f2: 630, vol: 3.0, dur: 0.06, attack: 0.016 };
+const BACKGROUND_MUSIC_DEFAULT = { f0: 385, f1: 430, f2: 630, vol: 0.085, dur: 0.06, attack: 0.016 };
 const AVATAR_54_98_BG_GRAY = 23; // 54～98 關卡片底色固定 23% 灰階（0%=白、100%=全黑）
 
 // 書櫃佈局：9 櫃，桌面 3×3、mobile 2×5（第一排櫃0櫃1、第二排櫃2櫃3…）
@@ -324,15 +324,15 @@ let swapHistoryZone;  // 最下面已交換區 { x, y, w, h, pad, lineHeight }
 const LEVEL_GROUPS = ['ABC', 'DEF', 'GHI', 'JKL', 'MNO', 'PQR', 'STU', 'VWX', '我愛你', '因為你', '你是妳', '可以嗎', '矮油啦', '當然好', '你早說', '阿不然', '親一個', '我不要', '親兩個', '才不要', '親三個', '那好吧', 'Avatars', 'awe1', 'awe2', 'awe3', 'awe4', 'awe5', 'awe6', 'awe7', 'awe8', 'awe9', 'awe10', 'awe11', 'awe12', 'awe13', 'awe14', 'awe15', 'awe16', 'awe17', 'awe18', 'awe19', 'awe20', 'awe21', 'awe22', 'awe23', 'awe24', 'awe25', 'awe26', 'awe27', 'awe28', 'awe29', 'awe30', '54', '55', '56', '57', '58', '59', '60', '61', '62', '63', '64', '65', '66', '67', '68', '69', '70', '71', '72', '73', '74', '75', '76', '77', '78', '79', '80', '81', '82', '83', '84', '85', '86', '87', '88', '89', '90', '91', '92', '93', '94', '95', '96', '97', '98', '99', '100'];
 // 關卡頭像：key = 關卡索引，value = 該關 3 種類型依序的圖片 URL。第 23 關用 avatar_1/2/3.png；54～100 關用 public/avatars/{關卡號}/ 底下 1,2,3 或 4,5,6 或 7,8,9.png（99 關為 01,02,03.png）
 const AVATAR_URLS_BY_LEVEL = (function () {
-  const o = { 22: ['/public/avatars/23/avatar_1.png', '/public/avatars/23/avatar_2.png', '/public/avatars/23/avatar_3.png'] };
+  const o = { 22: ['./public/avatars/23/avatar_1.png', './public/avatars/23/avatar_2.png', './public/avatars/23/avatar_3.png'] };
   for (let L = 53; L <= 97; L++) {
     const folder = L + 1;
     const r = (L - 53) % 3;
     const base = r === 0 ? 1 : r === 1 ? 4 : 7;
-    o[L] = ['/public/avatars/' + folder + '/' + base + '.png', '/public/avatars/' + folder + '/' + (base + 1) + '.png', '/public/avatars/' + folder + '/' + (base + 2) + '.png'];
+    o[L] = ['./public/avatars/' + folder + '/' + base + '.png', './public/avatars/' + folder + '/' + (base + 1) + '.png', './public/avatars/' + folder + '/' + (base + 2) + '.png'];
   }
-  o[98] = ['/public/avatars/99/01.png', '/public/avatars/99/02.png', '/public/avatars/99/03.png'];
-  o[99] = ['/public/avatars/100/1.png', '/public/avatars/100/2.png', '/public/avatars/100/3.png'];
+  o[98] = ['./public/avatars/99/01.png', './public/avatars/99/02.png', './public/avatars/99/03.png'];
+  o[99] = ['./public/avatars/100/1.png', './public/avatars/100/2.png', './public/avatars/100/3.png'];
   return o;
 })();
 let avatarImagesByLevel = {};  // 已載入的 PImage：avatarImagesByLevel[level][localIndex]
@@ -877,7 +877,7 @@ function getAudioContext() {
   if (audioCtx === null) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     masterGainNode = audioCtx.createGain();
-    masterGainNode.gain.value = 3.0;
+    masterGainNode.gain.value = 1;
     masterGainNode.connect(audioCtx.destination);
   }
   return audioCtx;
@@ -3109,7 +3109,7 @@ function drawWinConditionHint() {
   const levelIndices = getLevelTypeIndices(currentLevel);
   const names = levelIndices.map(function (i) { const t = ITEM_TYPES[i]; return t && t.name != null ? t.name : '?'; }).join('、');
   const gridLabel = gridCols === 2 ? '2×5' : '3×3';
-  const hintText = '過關：9 櫃（3×3） 每櫃 3 格需「全部同一種」）';
+  const hintText = '過關：9 櫃（3×3） 每櫃 3 格需「全部同一種」';
 
   if (winConditionHintLastText !== hintText) {
     winConditionHintEl.elt.textContent = hintText;

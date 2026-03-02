@@ -479,7 +479,7 @@
     wrap.addEventListener('transitionend', function onEnd(e) {
       if (e.propertyName !== 'opacity') return;
       wrap.removeEventListener('transitionend', onEnd);
-      window.location.replace('./game.html');
+      window.location.href = GAME_URL;
     }, { once: true });
   }
 
@@ -535,7 +535,7 @@
     var h = window.innerHeight;
     var size = 2 * Math.sqrt(w * w + h * h);
     createExpandingCircle({ x: x, y: y, size: size }, function () {
-      window.location.replace(GAME_URL);
+      window.location.href = GAME_URL;
     });
   }
 

@@ -2,7 +2,7 @@
   "name": "shelf-game",
   "private": true,
   "scripts": {
-    "start": "serve -l 3006"
+    "start": "serve www -l 3006"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.2",
