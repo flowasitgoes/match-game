@@ -2425,11 +2425,11 @@ function drawConveyorBelt() {
   fill(THEME_CONVEYOR[0], THEME_CONVEYOR[1], THEME_CONVEYOR[2]);
   noStroke();
   rect(conveyorZone.x, conveyorZone.y, conveyorZone.w, conveyorZone.h, 8);
-  // 標題「輸送帶」
+  // 標題「下一關」
   fill(THEME_CONVEYOR_TEXT[0], THEME_CONVEYOR_TEXT[1], THEME_CONVEYOR_TEXT[2]);
   textAlign(LEFT, CENTER);
   textSize(Math.min(14, conveyorZone.w * 0.032));
-  text('輸送帶', conveyorZone.x + pad, conveyorZone.y + conveyorZone.h / 2);
+  text('下一關', conveyorZone.x + pad, conveyorZone.y + conveyorZone.h / 2);
 
   // 「非下一關」的格子：依 currentLevel 快取，只在換關時做一次 blur（避免每幀 6 次 filter 傷效能）
   const numBlurredSegments = conveyorZone.segmentCount - 1;
