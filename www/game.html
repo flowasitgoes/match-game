@@ -101,6 +101,12 @@
       transform: rotate(calc(var(--game-border-rotate-after) * 1deg));
       box-shadow: -1px -1px 4px rgba(0, 0, 0, 0.1);
     }
+    @media (max-width: 768px), (pointer: coarse) {
+      #game-container::before,
+      #game-container::after {
+        display: none;
+      }
+    }
     /* 過場時えりか風格角色疊層：僅在恭喜過關時顯示，放在左下角 */
     #celebration-overlay {
       position: absolute;
