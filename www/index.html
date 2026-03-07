@@ -393,7 +393,7 @@
       padding: 60px 24px 60px;
       max-width: 1000px;
       margin: 0 auto;
-      background: #cecdce;
+      background: linear-gradient(118deg, #db9cbe 0%, #ac81ce 120%);
     }
     .landing-ratings-inner {
       max-width: 100%;
@@ -603,118 +603,149 @@
         display: none !important;
       }
     }
+    /* ----- Language switcher ----- */
+    .landing-lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .landing-lang-switcher button {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #6b5d52;
+      background: none;
+      border: none;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .landing-lang-switcher button:hover {
+      color: #7a5ae8;
+      background: rgba(122, 90, 232, 0.08);
+    }
+    .landing-lang-switcher button.is-active {
+      color: #7a5ae8;
+    }
+    .landing-lang-switcher button:disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+    /* ----- i18n fade transition ----- */
+    #landing-main.landing-lang-fade-out {
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+    #landing-main.landing-lang-fade-in {
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
   </style>
 </head>
 <body class="overflow-x-hidden">
   <!-- Header: Logo + Nav + CTAs (Cal AI structure) -->
   <header class="landing-header">
-    <a href="./" class="landing-header-logo">小蛋配對 Egg Cute</a>
+    <a href="./" class="landing-header-logo" data-i18n="logo">小蛋配對 Egg Cute</a>
     <div class="landing-header-right">
-      <button type="button" id="menu-button" class="landing-menu-btn" aria-label="選單" aria-expanded="false">
+      <button type="button" id="menu-button" class="landing-menu-btn" aria-label="選單" aria-expanded="false" data-i18n-aria="aria.menu">
         <i class="fa-solid fa-bars" aria-hidden="true"></i>
       </button>
       <nav class="landing-header-nav desktop-only">
-        <a href="intro.html" class="landing-header-cta">
-          <i class="fa-solid fa-play" aria-hidden="true"></i>
-          Play
-        </a>
-        <div class="landing-header-badges">
-          <a href="https://play.google.com/store/apps/details?id=com.ifunlove.eggcute" target="_blank" rel="noopener noreferrer" title="Google Play">
-            <img src="./public/landing-pages-images/Google-btn.png" alt="Get it on Google Play" />
-          </a>
+        <div class="landing-lang-switcher">
+          <button type="button" id="lang-en" data-lang="en">EN</button>
+          <span style="color:#ccc;font-weight:400;">/</span>
+          <button type="button" id="lang-zh" data-lang="zh">中文</button>
         </div>
       </nav>
     </div>
     <nav id="mobile-menu" class="landing-header-nav mobile-menu" aria-hidden="true">
-      <a href="intro.html" class="landing-header-cta">
-        <i class="fa-solid fa-play" aria-hidden="true"></i>
-        Play
-      </a>
-      <div class="landing-header-badges">
-        <a href="https://play.google.com/store/apps/details?id=com.ifunlove.eggcute" target="_blank" rel="noopener noreferrer" title="Google Play">
-          <img src="./public/landing-pages-images/Google-btn.png" alt="Get it on Google Play" />
-        </a>
+      <div class="landing-lang-switcher">
+        <button type="button" id="lang-en-mobile" data-lang="en">EN</button>
+        <span style="color:#ccc;font-weight:400;">/</span>
+        <button type="button" id="lang-zh-mobile" data-lang="zh">中文</button>
       </div>
     </nav>
   </header>
 
+  <main id="landing-main" class="landing-main">
   <!-- Hero: two columns — left: text + CTAs, right: phone mockup -->
   <section class="landing-hero">
     <div class="landing-hero-content">
-      <h1>Meet 小蛋配對</h1>
-      <p class="landing-hero-tagline">療癒系九宮格配對遊戲</p>
-      <p class="landing-hero-desc">
-        小蛋配對（Egg Cute）是日本療癒風的配對遊戲。可愛圖案與音效、溫和畫面，適合親子、媽咪與年長者。像整理書櫃與貼紙一樣的減壓小遊戲，放鬆玩。
+      <h1 data-i18n="hero.title">Meet 小蛋配對</h1>
+      <p class="landing-hero-tagline" data-i18n="hero.tagline">療癒系九宮格配對遊戲</p>
+      <p class="landing-hero-desc" data-i18n="hero.desc">
+        小蛋配對（Egg Cute）是日本療癒風的配對遊戲。可愛圖案與音效、溫和畫面，適合親子、少女與女士。像整理書櫃與貼紙一樣的減壓小遊戲，隨意滑，放鬆玩。
       </p>
       <div class="landing-hero-cta">
         <a href="intro.html" class="landing-btn">
           <i class="fa-solid fa-play" aria-hidden="true"></i>
-          <span>Play 開始遊戲</span>
+          <span data-i18n="hero.playBtn">Play 開始遊戲</span>
         </a>
-        <a href="https://play.google.com/store/apps/details?id=com.ifunlove.eggcute" class="landing-btn-badge" target="_blank" rel="noopener noreferrer" title="Get it on Google Play">
-          <img src="./public/landing-pages-images/Google-btn.png" alt="Get it on Google Play" />
+        <a href="https://play.google.com/store/apps/details?id=com.ifunlove.eggcute" class="landing-btn-badge" target="_blank" rel="noopener noreferrer" title="Get it on Google Play" data-i18n-title="hero.googlePlayAlt">
+          <img src="./public/landing-pages-images/Google-btn.png" alt="Get it on Google Play" data-i18n-alt="hero.googlePlayAlt" />
         </a>
       </div>
     </div>
     <div class="landing-hero-visual">
-      <img src="./public/landing-pages-images/android-example-2phonts.png" alt="小蛋配對遊戲畫面預覽：關卡進行中與恭喜過關" width="700" height="700" loading="lazy" />
+      <img src="./public/landing-pages-images/android-example-2phonts.png" alt="小蛋配對遊戲畫面預覽" width="700" height="700" loading="lazy" data-i18n-alt="hero.imgAlt" />
     </div>
   </section>
 
   <!-- Section: Why choose / What does it include -->
   <section class="landing-section">
-    <h2>Why 小蛋配對？</h2>
+    <h2 data-i18n="sectionWhy.title">Egg Cute為你帶來什麼氛圍?</h2>
     <div class="landing-features">
       <div class="landing-feature">
         <div class="landing-feature-icon"><i class="fa-solid fa-heart" aria-hidden="true"></i></div>
-        <h3>療癒・放鬆</h3>
-        <p>溫和畫面與音效，像整理書櫃一樣減壓，適合想放空的你。</p>
+        <h3 data-i18n="sectionWhy.f1Title">療癒・放鬆</h3>
+        <p data-i18n="sectionWhy.f1Desc">溫和畫面與音效，像整理書櫃一樣減壓，適合想放空的你。</p>
       </div>
       <div class="landing-feature">
         <div class="landing-feature-icon"><i class="fa-solid fa-palette" aria-hidden="true"></i></div>
-        <h3>可愛・溫馨</h3>
-        <p>日本療癒風圖案與九宮格配對，親子、媽咪與年長者都適合。</p>
+        <h3 data-i18n="sectionWhy.f2Title">可愛・溫馨</h3>
+        <p data-i18n="sectionWhy.f2Desc">日本療癒風圖案與九宮格配對，親子、媽咪與年長者都適合。</p>
       </div>
       <div class="landing-feature">
         <div class="landing-feature-icon"><i class="fa-solid fa-gamepad" aria-hidden="true"></i></div>
-        <h3>簡單・好上手</h3>
-        <p>每櫃三格配成同一種即可過關，直覺拖曳、隨時可玩。</p>
+        <h3 data-i18n="sectionWhy.f3Title">簡單・好上手</h3>
+        <p data-i18n="sectionWhy.f3Desc">每櫃三格配成同一種即可過關，直覺拖曳、隨時可玩。</p>
       </div>
     </div>
   </section>
 
   <!-- Gallery (妝點) -->
   <section class="landing-gallery" aria-label="遊戲畫面 Gallery">
-    <h2 class="landing-gallery-title">遊戲畫面</h2>
+    <h2 class="landing-gallery-title" data-i18n="gallery.title">遊戲畫面</h2>
     <div class="landing-gallery-grid">
       <div class="landing-gallery-item">
-        <img src="./public/landing-pages-images/gallery-1.jpg" alt="小蛋配對遊戲畫面 1" width="320" height="200" loading="lazy" />
+        <img src="./public/landing-pages-images/gallery-1.jpg" alt="小蛋配對遊戲畫面 1" width="320" height="200" loading="lazy" data-i18n-alt="gallery.imgAlt" data-i18n-alt-suffix=" 1" />
         <div class="landing-gallery-card-body">
           <div class="landing-gallery-card-head">
-            <h3>充滿故事性</h3>
+            <h3 data-i18n="gallery.c1Title">充滿故事性</h3>
             <div class="landing-gallery-card-icon" aria-hidden="true"><i class="fa-solid fa-book-open"></i></div>
           </div>
-          <p>每關都有可愛角色與情境，像在讀一本療癒小書，讓遊戲更有溫度。</p>
+          <p data-i18n="gallery.c1Desc">每關都有可愛角色與情境，像在讀一本療癒小書，讓遊戲更有溫度。</p>
         </div>
       </div>
       <div class="landing-gallery-item">
-        <img src="./public/landing-pages-images/gallery-2.jpg" alt="小蛋配對遊戲畫面 2" width="320" height="200" loading="lazy" />
+        <img src="./public/landing-pages-images/gallery-2.jpg" alt="小蛋配對遊戲畫面 2" width="320" height="200" loading="lazy" data-i18n-alt="gallery.imgAlt" data-i18n-alt-suffix=" 2" />
         <div class="landing-gallery-card-body">
           <div class="landing-gallery-card-head">
-            <h3>禪意寧靜的視覺</h3>
+            <h3 data-i18n="gallery.c2Title">禪意寧靜的視覺</h3>
             <div class="landing-gallery-card-icon" aria-hidden="true"><i class="fa-solid fa-spa"></i></div>
           </div>
-          <p>溫和配色與九宮格秩序感，帶來平靜與平衡的視覺體驗，放鬆心情。</p>
+          <p data-i18n="gallery.c2Desc">溫和配色與九宮格秩序感，帶來平靜與平衡的視覺體驗，放鬆心情。</p>
         </div>
       </div>
       <div class="landing-gallery-item">
-        <img src="./public/landing-pages-images/gallery-3.jpg" alt="小蛋配對遊戲畫面 3" width="320" height="200" loading="lazy" />
+        <img src="./public/landing-pages-images/gallery-3.jpg" alt="小蛋配對遊戲畫面 3" width="320" height="200" loading="lazy" data-i18n-alt="gallery.imgAlt" data-i18n-alt-suffix=" 3" />
         <div class="landing-gallery-card-body">
           <div class="landing-gallery-card-head">
-            <h3>輕鬆好玩的遊戲性</h3>
+            <h3 data-i18n="gallery.c3Title">輕鬆好玩的遊戲性</h3>
             <div class="landing-gallery-card-icon" aria-hidden="true"><i class="fa-solid fa-gamepad"></i></div>
           </div>
-          <p>直覺拖曳、三格一組即可過關，隨時都能輕鬆玩，沒有壓力。</p>
+          <p data-i18n="gallery.c3Desc">直覺拖曳、三格一組即可過關，隨時都能輕鬆玩，沒有壓力。</p>
         </div>
       </div>
     </div>
@@ -726,26 +757,26 @@
       <div class="landing-ratings-stars" aria-hidden="true">⭐⭐⭐⭐⭐</div>
       <div class="landing-ratings-title-row">
         <img src="./public/landing-pages-images/wreath.svg" alt="" class="landing-ratings-wreath" width="42" height="120" />
-        <h2>太感謝你們的鼓勵了！<br>再給我們五星好評哦～</h2>
+        <h2 id="ratings-title"><span data-i18n="ratings.titleLine1">太感謝你們的鼓勵了！</span><br><span data-i18n="ratings.titleLine2">再給我們五星好評哦～</span></h2>
         <img src="./public/landing-pages-images/wreath.svg" alt="" class="landing-ratings-wreath landing-ratings-wreath-right" width="42" height="120" />
       </div>
       <div class="landing-ratings-meta">
         <span class="landing-ratings-meta-item landing-ratings-apple-meta">
           <svg xmlns="http://www.w3.org/2000/svg" width="19" height="23" viewBox="0 0 19 23" fill="none" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M13.7212 0C13.8259 1.36126 13.407 2.61776 12.5693 3.66496C11.7316 4.71206 10.5798 5.34036 9.21847 5.34036C9.11377 3.97906 9.53267 2.72256 10.3704 1.78011C11.2081 0.73299 12.4646 0.10471 13.7212 0ZM18.0144 7.74866C16.4438 8.69106 15.5013 10.3665 15.5013 12.1466C15.5013 14.1362 16.6532 16.021 18.538 16.6493C18.2239 17.8011 17.7003 18.9529 16.9673 19.8953C16.0249 21.3613 15.0825 22.7226 13.5118 22.7226C12.751 22.7226 12.2605 22.5015 11.7546 22.2735C11.216 22.0307 10.6601 21.7801 9.74217 21.7801C8.76767 21.7801 8.16977 22.0312 7.58757 22.2756C7.10637 22.4777 6.63597 22.6752 5.97247 22.7226C4.50657 22.7226 3.35467 21.1519 2.41227 19.7906C0.422771 16.9634 -1.04323 11.7278 0.946371 8.27226C1.88877 6.59686 3.66887 5.54976 5.65837 5.44506C6.47197 5.44506 7.25337 5.76756 7.94877 6.05466C8.50637 6.28476 9.00867 6.49216 9.42797 6.49216C9.79557 6.49216 10.2747 6.30096 10.828 6.08026C11.6933 5.73496 12.7401 5.31726 13.826 5.44506C15.5013 5.54976 17.072 6.38746 18.0144 7.74866Z" fill="currentColor"/></svg>
-          <span>即將推出</span>
+          <span data-i18n="ratings.appleComing">即將推出</span>
         </span>
         <span class="landing-ratings-meta-dot" aria-hidden="true">•</span>
         <span class="landing-ratings-meta-item">
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M3.13495 0.879883L12.6637 10.3399L15.2762 7.72738L3.7262 1.05863C3.5337 0.946914 3.32745 0.885039 3.13495 0.879883ZM2.33745 1.31988C2.25151 1.47285 2.19995 1.65332 2.19995 1.85613V20.2399C2.19995 20.3877 2.23089 20.52 2.28245 20.6386L12.0312 10.9586L2.33745 1.31988ZM16.0737 8.18113L13.2825 10.9586L16.0737 13.7224L19.4837 11.7699C19.9684 11.4897 20.0371 11.1339 20.0337 10.9449C20.0285 10.6321 19.8309 10.3399 19.4975 10.1611C19.207 10.0047 17.05 8.74832 16.0737 8.18113ZM12.6637 11.5774L3.05245 21.1061C3.21229 21.0975 3.38589 21.0632 3.54745 20.9686C3.92386 20.7504 11.5362 16.3486 11.5362 16.3486L15.29 14.1899L12.6637 11.5774Z" fill="currentColor"/></svg>
-          <span>Google Play</span>
+          <span data-i18n="ratings.googlePlay">Google Play</span>
         </span>
       </div>
       <div class="landing-ratings-ctas">
         <span class="landing-ratings-apple-btn" aria-label="App Store 即將推出">
-          <span class="landing-ratings-apple-placeholder">App Store 即將推出</span>
+          <span class="landing-ratings-apple-placeholder" data-i18n="ratings.appStoreComing">App Store 即將推出</span>
         </span>
-        <a href="https://play.google.com/store/apps/details?id=com.ifunlove.eggcute" target="_blank" rel="noopener noreferrer" title="Google Play 下載">
-          <img src="./public/landing-pages-images/Google-btn.png" alt="Get it on Google Play" />
+        <a href="https://play.google.com/store/apps/details?id=com.ifunlove.eggcute" target="_blank" rel="noopener noreferrer" title="Google Play 下載" data-i18n-title="hero.googlePlayAlt">
+          <img src="./public/landing-pages-images/Google-btn.png" alt="Get it on Google Play" data-i18n-alt="hero.googlePlayAlt" />
         </a>
       </div>
     </div>
@@ -754,14 +785,15 @@
   <!-- Footer: left / center / right -->
   <footer class="landing-footer">
     <div class="landing-footer-bottom">
-      <p class="landing-footer-left">© All rights reserved 2026, ifunlove.com</p>
-      <p class="landing-footer-center">Egg Cute 小蛋配對</p>
+      <p class="landing-footer-left" data-i18n="footer.copyright">© All rights reserved 2026, ifunlove.com</p>
+      <p class="landing-footer-center" data-i18n="footer.appName">Egg Cute 小蛋配對</p>
       <ul class="landing-footer-links landing-footer-right">
-        <li><a href="privacy-policy.html">Privacy Policy</a></li>
-        <li><a href="https://ifunlove.com" target="_blank" rel="noopener noreferrer">Contact</a></li>
+        <li><a href="privacy-policy.html" data-i18n="footer.privacy">Privacy Policy</a></li>
+        <li><a href="https://ifunlove.com" target="_blank" rel="noopener noreferrer" data-i18n="footer.contact">Contact</a></li>
       </ul>
     </div>
   </footer>
+  </main>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       var menuButton = document.getElementById('menu-button');
@@ -772,6 +804,99 @@
           menuButton.setAttribute('aria-expanded', mobileMenu.classList.contains('is-open'));
         });
       }
+
+      // ----- i18n: load locales and apply with fade -----
+      var LANG_KEY = 'landing-lang';
+      var locales = { zh: null, en: null };
+      var currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+      var mainEl = document.getElementById('landing-main');
+
+      function getByPath(obj, path) {
+        var keys = path.split('.');
+        for (var i = 0; i < keys.length; i++) obj = obj[keys[i]];
+        return obj;
+      }
+
+      function applyLang(lang) {
+        var t = locales[lang];
+        if (!t) return;
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+          var key = el.getAttribute('data-i18n');
+          var val = getByPath(t, key);
+          if (val != null) el.textContent = val;
+        });
+        document.querySelectorAll('[data-i18n-alt]').forEach(function (el) {
+          var key = el.getAttribute('data-i18n-alt');
+          var suffix = el.getAttribute('data-i18n-alt-suffix') || '';
+          var val = getByPath(t, key);
+          if (val != null) el.setAttribute('alt', val + suffix);
+        });
+        document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
+          var key = el.getAttribute('data-i18n-title');
+          var val = getByPath(t, key);
+          if (val != null) el.setAttribute('title', val);
+        });
+        document.querySelectorAll('[data-i18n-aria]').forEach(function (el) {
+          var key = el.getAttribute('data-i18n-aria');
+          var val = getByPath(t, key);
+          if (val != null) el.setAttribute('aria-label', val);
+        });
+        // Ratings title: two lines
+        var r1 = getByPath(t, 'ratings.titleLine1');
+        var r2 = getByPath(t, 'ratings.titleLine2');
+        var ratingsTitle = document.getElementById('ratings-title');
+        if (ratingsTitle && r1 != null && r2 != null) {
+          ratingsTitle.innerHTML = r1 + '<br>' + r2;
+        }
+        // Active state for lang buttons
+        document.querySelectorAll('.landing-lang-switcher button').forEach(function (btn) {
+          var l = btn.getAttribute('data-lang');
+          btn.classList.toggle('is-active', l === lang);
+          btn.disabled = l === lang;
+        });
+      }
+
+      function setLang(lang, noFade) {
+        if (locales[lang] == null) return;
+        if (noFade) {
+          currentLang = lang;
+          localStorage.setItem(LANG_KEY, lang);
+          applyLang(lang);
+          return;
+        }
+        mainEl.classList.add('landing-lang-fade-out');
+        setTimeout(function () {
+          currentLang = lang;
+          localStorage.setItem(LANG_KEY, lang);
+          applyLang(lang);
+          mainEl.classList.remove('landing-lang-fade-out');
+          mainEl.classList.add('landing-lang-fade-in');
+          setTimeout(function () {
+            mainEl.classList.remove('landing-lang-fade-in');
+          }, 250);
+        }, 250);
+      }
+
+      function bindLangButtons() {
+        ['lang-en', 'lang-zh', 'lang-en-mobile', 'lang-zh-mobile'].forEach(function (id) {
+          var btn = document.getElementById(id);
+          if (!btn) return;
+          btn.addEventListener('click', function () {
+            var l = btn.getAttribute('data-lang');
+            if (l !== currentLang) setLang(l);
+          });
+        });
+      }
+
+      Promise.all([
+        fetch('./public/locales/zh.json').then(function (r) { return r.json(); }),
+        fetch('./public/locales/en.json').then(function (r) { return r.json(); })
+      ]).then(function (arr) {
+        locales.zh = arr[0];
+        locales.en = arr[1];
+        applyLang(currentLang);
+        bindLangButtons();
+      });
     });
   </script>
 </body>
