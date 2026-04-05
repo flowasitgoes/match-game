@@ -2,11 +2,13 @@
   "name": "shelf-game",
   "private": true,
   "scripts": {
-    "start": "serve www -l 3006"
+    "start": "serve www -l 3006",
+    "build:admob-init": "esbuild scripts/admob-init-entry.js --bundle --format=iife --platform=browser --outfile=www/js/admob-init.js"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.0.2",
     "@capacitor/core": "^8.0.2",
+    "esbuild": "^0.25.0",
     "serve": "^14.2.0"
   },
   "dependencies": {
