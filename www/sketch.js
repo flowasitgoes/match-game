@@ -1371,6 +1371,17 @@ const CELEBRATION_DURATION_MS = 3000;
 const CONFETTI_COUNT = 80;
 let levelCompleteCelebration = null;  // { active, startedAt, duration, completedLevel, particles[] } | null
 
+// 插頁廣告：只在過關轉場呼叫（game.html 載入的 admob-init.js 會掛 window.showInterstitialAd）
+const INTERSTITIAL_COOLDOWN_MS = 60 * 1000;
+let lastInterstitialShownAtMs = 0;
+function tryShowInterstitialAfterLevelTransition(force) {
+  if (typeof window.showInterstitialAd !== 'function') return;
+  const now = millis();
+  if (!force && lastInterstitialShownAtMs > 0 && now - lastInterstitialShownAtMs < INTERSTITIAL_COOLDOWN_MS) return;
+  lastInterstitialShownAtMs = now;
+  window.showInterstitialAd();
+}
+
 // --- 拖曳／放置動畫（主機遊戲感）---
 let dragOrbitPhase = 0;   // 拖曳時軌道星球旋轉相位（每幀累加）
 const DRAG_ORBIT_SPEED = 0.08;
@@ -2359,6 +2370,7 @@ function draw() {
     if (t >= levelCompleteCelebration.duration) {
       const overlayEl = document.getElementById('celebration-overlay');
       if (overlayEl) overlayEl.classList.remove('visible');
+      tryShowInterstitialAfterLevelTransition();
       currentLevel++;
       initLevel(currentLevel);  // 計時已在 initLevel 歸零，本關第一次 drag 才開始
       levelCompleteCelebration = null;
@@ -3448,6 +3460,7 @@ function checkWin() {
     return;
   } else {
     // 最後一關也過了：顯示過關
+    tryShowInterstitialAfterLevelTransition(true);
     gameState = 'completed';
     endTime = millis();
   }
