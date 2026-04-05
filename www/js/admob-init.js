@@ -744,6 +744,7 @@
   });
 
   // scripts/admob-init-entry.js
+  var INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/1033173712";
   async function initAds() {
     if (!Capacitor.isNativePlatform()) return;
     try {
@@ -755,6 +756,19 @@
     }
   }
   initAds();
+  async function showInterstitialAd() {
+    if (!Capacitor.isNativePlatform()) return;
+    try {
+      await AdMob.prepareInterstitial({
+        adId: INTERSTITIAL_AD_ID,
+        isTesting: true
+      });
+      await AdMob.showInterstitial();
+    } catch (e) {
+      console.warn("[AdMob] interstitial failed", e);
+    }
+  }
+  window.showInterstitialAd = showInterstitialAd;
 })();
 /*! Bundled license information:
 
