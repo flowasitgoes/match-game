@@ -2107,22 +2107,28 @@ function computeLayout() {
 
   // 最下面：已交換區（顯示實際發生過的交換）—— 已註解
   // const historyZoneH = Math.min(height * 0.14, 80);
-  // 輸送帶：在已交換區上方，顯示接下來的關卡組
-  const conveyorGap = 8;
-  const conveyorH = Math.min(height * 0.1, 56);
-  const conveyorLabelW = 52;
-  const conveyorSegmentCount = 7;
-  conveyorZone = {
-    x: margin,
-    y: height - conveyorH - margin - conveyorGap,
-    w: width - 2 * margin,
-    h: conveyorH,
-    pad: 10,
-    labelWidth: conveyorLabelW,
-    segmentCount: conveyorSegmentCount,
-    gap: 8
-  };
-  conveyorZone.segmentW = (conveyorZone.w - 2 * conveyorZone.pad - conveyorZone.labelWidth - (conveyorZone.segmentCount - 1) * conveyorZone.gap) / conveyorZone.segmentCount;
+  // 輸送帶：在已交換區上方，顯示接下來的關卡組 —— 暫時關閉試看
+  // const conveyorGap = 8;
+  // const conveyorH = Math.min(height * 0.1, 56);
+  // const conveyorLabelW = 52;
+  // const conveyorSegmentCount = 7;
+  // conveyorZone = {
+  //   x: margin,
+  //   y: height - conveyorH - margin - conveyorGap,
+  //   w: width - 2 * margin,
+  //   h: conveyorH,
+  //   pad: 10,
+  //   labelWidth: conveyorLabelW,
+  //   segmentCount: conveyorSegmentCount,
+  //   gap: 8
+  // };
+  // conveyorZone.segmentW = (conveyorZone.w - 2 * conveyorZone.pad - conveyorZone.labelWidth - (conveyorZone.segmentCount - 1) * conveyorZone.gap) / conveyorZone.segmentCount;
+  conveyorZone = null;
+  if (conveyorCachedBlur.pg) {
+    conveyorCachedBlur.pg.remove();
+    conveyorCachedBlur.pg = null;
+    conveyorCachedBlur.level = -1;
+  }
 }
 
 // 回傳某櫃左緣 X（2×5 時櫃 8 置中）
@@ -2324,7 +2330,7 @@ function draw() {
   drawShelves();
   drawShelfSeparators();
   // drawSwapZone();  // 右上角交換區已註解
-  drawConveyorBelt();
+  // drawConveyorBelt();  // 輸送帶暫時關閉試看
   // drawSwapHistoryZone();  // 已交換區已註解
   // 拖動時畫出可放置的格子範圍（方便除錯）
   if (DEBUG && draggedItem !== null) {
@@ -3304,17 +3310,17 @@ function pointerPressed(px, py) {
     }
     return;
   }
-  // 點擊輸送帶某一格：切換到該關（換牌）
-  const conveyorSeg = getConveyorSegmentAt(px, py);
-  if (conveyorSeg >= 0) {
-    const targetLevel = currentLevel + 1 + conveyorSeg;
-    if (targetLevel >= 0 && targetLevel < NUM_LEVELS) {
-      currentLevel = targetLevel;
-      initLevel(currentLevel);  // 計時已歸零，本關第一次 drag 才開始
-      gameState = 'playing';
-    }
-    return;
-  }
+  // 點擊輸送帶某一格：切換到該關（換牌）—— 輸送帶暫關時一併註解
+  // const conveyorSeg = getConveyorSegmentAt(px, py);
+  // if (conveyorSeg >= 0) {
+  //   const targetLevel = currentLevel + 1 + conveyorSeg;
+  //   if (targetLevel >= 0 && targetLevel < NUM_LEVELS) {
+  //     currentLevel = targetLevel;
+  //     initLevel(currentLevel);  // 計時已歸零，本關第一次 drag 才開始
+  //     gameState = 'playing';
+  //   }
+  //   return;
+  // }
   const hit = hitTestItem(px, py);
   if (hit) {
     if (gameState === 'idle') gameState = 'playing';
