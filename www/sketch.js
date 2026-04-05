@@ -2427,7 +2427,7 @@ function drawConveyorBelt() {
   const segY = conveyorZone.y + conveyorZone.h / 2;
   const nextLevelSegmentIndex = 0;  // 只顯示「下一關」為清晰，其餘打馬賽克（模糊）
 
-  // 輸送帶背景（奶油燕麥色）
+  // 輸送帶背景（奶油燕麥色）好
   fill(THEME_CONVEYOR[0], THEME_CONVEYOR[1], THEME_CONVEYOR[2]);
   noStroke();
   rect(conveyorZone.x, conveyorZone.y, conveyorZone.w, conveyorZone.h, 8);
