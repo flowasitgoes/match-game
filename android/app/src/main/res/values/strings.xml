@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
+    <string name="admob_app_id">ca-app-pub-8018574520708301~9384690173</string>
     <string name="app_name">Egg Cute</string>
     <string name="title_activity_main">Egg Cute</string>
     <string name="package_name">com.ifunlove.eggcute</string>
