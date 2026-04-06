@@ -744,12 +744,12 @@
   });
 
   // scripts/admob-init-entry.js
-  var INTERSTITIAL_AD_ID = "ca-app-pub-3940256099942544/1033173712";
+  var INTERSTITIAL_AD_ID = "ca-app-pub-8018574520708301/8085817309";
   async function initAds() {
     if (!Capacitor.isNativePlatform()) return;
     try {
       await AdMob.initialize({
-        initializeForTesting: true
+        initializeForTesting: false
       });
     } catch (e) {
       console.warn("[AdMob] init failed", e);
@@ -761,7 +761,7 @@
     try {
       await AdMob.prepareInterstitial({
         adId: INTERSTITIAL_AD_ID,
-        isTesting: true
+        isTesting: false
       });
       await AdMob.showInterstitial();
     } catch (e) {

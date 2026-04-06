@@ -8,7 +8,7 @@ async function initAds() {
   if (!Capacitor.isNativePlatform()) return;
   try {
     await AdMob.initialize({
-      initializeForTesting: true,
+      initializeForTesting: false,
     });
   } catch (e) {
     console.warn('[AdMob] init failed', e);
@@ -26,7 +26,7 @@ async function showInterstitialAd() {
   try {
     await AdMob.prepareInterstitial({
       adId: INTERSTITIAL_AD_ID,
-      isTesting: true,
+      isTesting: false,
     });
     await AdMob.showInterstitial();
   } catch (e) {
