@@ -68,6 +68,15 @@
     } catch (e) {}
   }
 
+  /** 入口選「觀看影片」（與最後 game_start 分開，方便漏斗） */
+  function logIntroWatchVideo() {
+    try {
+      if (typeof window.__eggLogAnalytics === 'function') {
+        window.__eggLogAnalytics('intro_watch_video', {});
+      }
+    } catch (e) {}
+  }
+
   /** Skip：由視窗中央展開，再往下移出並淡出（不依點擊座標） */
   function createSkipCenterSlideDownTransition(onComplete) {
     var wrapper = document.createElement('div');
@@ -437,6 +446,7 @@
       e.stopPropagation();
     }
     if (!watchVideoBtn || !tryConsumeIntroGate()) return;
+    logIntroWatchVideo();
     watchVideoBtn.classList.add('watch-video-ack');
     playClickSoundThenStart();
   }

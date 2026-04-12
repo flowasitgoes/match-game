@@ -680,6 +680,28 @@
       if (typeof windowResized === 'function') windowResized();
       window.dispatchEvent(new Event('resize'));
     };
+    /* intro 在 body 前段就會互動，Firebase 為 type=module 會在整頁（含 sketch）解析完才執行；先佇列避免漏送 game_start */
+    (function () {
+      var q = [];
+      window.__eggLogAnalytics = function (name, params) {
+        q.push({ name: name, params: params || {} });
+      };
+      window.__eggFlushAnalyticsQueue = function (impl) {
+        if (typeof impl !== 'function') return;
+        window.__eggLogAnalytics = impl;
+        for (var i = 0; i < q.length; i++) {
+          try {
+            impl(q[i].name, q[i].params);
+          } catch (e) {}
+        }
+        q.length = 0;
+        try {
+          delete window.__eggFlushAnalyticsQueue;
+        } catch (e2) {
+          window.__eggFlushAnalyticsQueue = undefined;
+        }
+      };
+    })();
   </script>
   <script src="intro.js"></script>
   <div id="game-entrance-overlay" class="game-entrance-overlay" aria-hidden="true"></div>
@@ -906,11 +928,16 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
-    window.__eggLogAnalytics = function (name, params) {
+    function eggLogEvent(name, params) {
       try {
         logEvent(analytics, name, params || {});
       } catch (e) {}
-    };
+    }
+    if (typeof window.__eggFlushAnalyticsQueue === 'function') {
+      window.__eggFlushAnalyticsQueue(eggLogEvent);
+    } else {
+      window.__eggLogAnalytics = eggLogEvent;
+    }
   </script>
 </body>
 </html>

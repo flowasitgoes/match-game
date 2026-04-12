@@ -1382,9 +1382,10 @@ function tryShowInterstitialAfterLevelTransition(force) {
   window.showInterstitialAd();
 }
 
-// Firebase Analytics 自訂事件（game.html 的 Firebase 模組會掛 window.__eggLogAnalytics）
-let analyticsLevel1Started = false;
-let analyticsLevel1Completed = false;
+// Firebase Analytics 自訂事件（game.html 會先掛佇列 stub，Firebase 載入後 flush；見 __eggFlushAnalyticsQueue）
+// 每關：game_level_start（該關第一次拖曳）、game_level_complete（該關過關）；level 為 1～NUM_LEVELS
+let analyticsLevelEngaged = {};
+let analyticsLevelCompleted = {};
 function tryEggAnalytics(name, params) {
   if (typeof window.__eggLogAnalytics !== 'function') return;
   try {
@@ -2206,8 +2207,8 @@ function initGame() {
   startTime = null;
   endTime = null;
   currentLevel = 0;  // 新局從第一關 ABC 開始
-  analyticsLevel1Started = false;
-  analyticsLevel1Completed = false;
+  analyticsLevelEngaged = {};
+  analyticsLevelCompleted = {};
   backgroundMusicStartedEver = false; // 新局時重置，第一次 drag 再開始背景音樂
   initLevel(currentLevel);
   setReplayButtonRect();
@@ -3347,9 +3348,9 @@ function pointerPressed(px, py) {
   // }
   const hit = hitTestItem(px, py);
   if (hit) {
-    if (gameState === 'idle' && currentLevel === 0 && !analyticsLevel1Started) {
-      analyticsLevel1Started = true;
-      tryEggAnalytics('level_1_start');
+    if (!analyticsLevelEngaged[currentLevel]) {
+      analyticsLevelEngaged[currentLevel] = true;
+      tryEggAnalytics('game_level_start', { level: currentLevel + 1 });
     }
     if (gameState === 'idle') gameState = 'playing';
     // 本關第一次 drag 才開始計時
@@ -3463,9 +3464,12 @@ function checkWin() {
     }
   }
   const elapsed = (startTime != null) ? (millis() - startTime) / 1000 : 0;
-  if (currentLevel === 0 && !analyticsLevel1Completed) {
-    analyticsLevel1Completed = true;
-    tryEggAnalytics('level_1_complete');
+  if (!analyticsLevelCompleted[currentLevel]) {
+    analyticsLevelCompleted[currentLevel] = true;
+    tryEggAnalytics('game_level_complete', {
+      level: currentLevel + 1,
+      time_sec: Math.round(elapsed * 100) / 100
+    });
   }
   playLevelCompleteSound();
   if (currentLevel < NUM_LEVELS - 1) {
