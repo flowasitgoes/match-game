@@ -3137,14 +3137,14 @@ function drawWinConditionHint() {
     winConditionHintEl.class('win-condition-hint-overlay');
     winConditionHintEl.parent(document.body);
   }
-  const levelIndices = getLevelTypeIndices(currentLevel);
-  const names = levelIndices.map(function (i) { const t = ITEM_TYPES[i]; return t && t.name != null ? t.name : '?'; }).join('、');
-  const gridLabel = gridCols === 2 ? '2×5' : '3×3';
-  const hintText = '過關：9 櫃（3×3） 每櫃 3 格需「全部同一種」';
-
-  if (winConditionHintLastText !== hintText) {
-    winConditionHintEl.elt.textContent = hintText;
-    winConditionHintLastText = hintText;
+    // 過關：9 櫃（3×3） 每櫃 3 格需「全部同一種」
+  const WIN_CONDITION_HINT_DOM_KEY = 'hint_en_goal_v1';
+  if (winConditionHintLastText !== WIN_CONDITION_HINT_DOM_KEY) {
+    winConditionHintEl.elt.innerHTML =
+      '<strong>Goal:</strong> 9 cells, 3×3 grid<br>' +
+      'Each cell needs 3 of the same,<br>' +
+      'Drag to start!';
+    winConditionHintLastText = WIN_CONDITION_HINT_DOM_KEY;
   }
   if (winConditionHintEl.elt.style.display !== 'block') {
     winConditionHintEl.elt.style.display = 'block';

@@ -472,19 +472,23 @@
       display: none;
       max-width: max-content;
       text-align: left;
-      padding: 8px 2px 8px 8px;
+      padding: 8px 10px 8px 10px;
       border: 6px solid #9b99ff;
       border-radius: 12px 32px 22px 8px;
       font-size: 14px;
       font-weight: 600;
+      line-height: 1.35;
       color: rgb(70, 60, 55);
       background: rgba(255, 235, 245, 0.95);
       box-shadow: 0 2px 12px rgba(200, 160, 180, 0.25);
       pointer-events: none;
     }
+    .win-condition-hint-overlay strong {
+      font-weight: 800;
+    }
     @media (max-width: 600px) {
       .win-condition-hint-overlay {
-        max-width: 142px;
+        max-width: min(260px, calc(100vw - 20px));
         top: 0;
       }
     }
