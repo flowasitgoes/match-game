@@ -593,11 +593,17 @@
         <source src="./public/eggcute-promo-final-video-02092026-(11).mp4" type="video/mp4" />
       </video>
       <div id="intro-click-to-start">
-        <div class="start-hint-wrap">
-          <span class="start-hint">呼~ 今天的天空真美啊~!</span>
-          <span class="entrance-click-icon" aria-hidden="true">
-            <img src="./public/entrance-click-icon.png" alt="" />
-          </span>
+        <div class="intro-click-to-start-inner">
+          <div class="start-hint-wrap">
+            <span class="start-hint">Let's Start The Game!</span>
+            <button type="button" class="intro-enter-btn entrance-click-icon" aria-label="Enter 進入遊戲">
+              <img src="./public/entrance-click-icon.png" alt="" />
+            </button>
+          </div>
+          <button type="button" id="intro-watch-video-btn" class="intro-watch-video-btn">
+            <span class="intro-watch-video-line">Watch video</span>
+            <span class="intro-watch-video-line">觀看影片</span>
+          </button>
         </div>
       </div>
       <div id="intro-pause-overlay">
@@ -663,6 +669,14 @@
       if (v) { try { v.pause(); } catch (e) {} }
       var boot = document.getElementById('intro-boot-layer');
       if (boot) boot.remove();
+      // skip 過場掛在 body 上（在 boot 外），不移除會一直遮住遊戲
+      var skipFx = document.querySelectorAll(
+        '.page-transition-circle-wrapper, .page-transition-skip-down-wrapper'
+      );
+      for (var i = 0; i < skipFx.length; i++) {
+        skipFx[i].remove();
+      }
+      document.body.style.backgroundColor = '';
       if (typeof windowResized === 'function') windowResized();
       window.dispatchEvent(new Event('resize'));
     };

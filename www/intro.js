@@ -22,7 +22,8 @@
   ];
   var continueHint = pauseOverlay ? pauseOverlay.querySelector('.continue-hint') : null;
   var startHint = clickToStart ? clickToStart.querySelector('.start-hint') : null;
-  var entranceClickIcon = clickToStart ? clickToStart.querySelector('.entrance-click-icon') : null;
+  var enterGameBtn = clickToStart ? clickToStart.querySelector('.intro-enter-btn') : null;
+  var watchVideoBtn = document.getElementById('intro-watch-video-btn');
   var startBtnWrap = document.getElementById('intro-start-btn-wrap');
   var startBtn = document.getElementById('intro-start-btn');
   var skipBtn = document.getElementById('intro-skip-btn');
@@ -32,6 +33,7 @@
   var loadingStartTime = Date.now();
   var pauseIndex = 0;
   var hasUnmuted = false;
+  var introGateConsumed = false;
   var pauseSound = new Audio('./public/pause-sound-1.mp3');
   var clickSound = new Audio('./public/click-sound.mp3');
   clickSound.volume = 1;
@@ -45,8 +47,9 @@
   var pauseAudioCtx = null;
   var pauseSoundBuffer = null;
 
-  var DURATION_ANIMATION_CIRCLE = 2000;
-  var DURATION_ANIMATION_OPACITY = 400;
+  var DURATION_ANIMATION_CIRCLE = 700;
+  /** 與 .page-transition-skip-down-glow 的 animation-delay 對齊，避免提早進遊戲截斷動畫 */
+  var SKIP_DOWN_GLOW_DELAY_MS = 18;
   var GAME_URL = './game.html';
 
   function navigateFromIntroToGame() {
@@ -65,35 +68,21 @@
     } catch (e) {}
   }
 
-  function createExpandingCircle(opts, onComplete) {
-    var x = opts.x != null ? opts.x : window.innerWidth / 2;
-    var y = opts.y != null ? opts.y : window.innerHeight / 2;
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    var size = opts.size != null ? opts.size : 2 * Math.sqrt(w * w + h * h);
+  /** Skip：由視窗中央展開，再往下移出並淡出（不依點擊座標） */
+  function createSkipCenterSlideDownTransition(onComplete) {
     var wrapper = document.createElement('div');
-    wrapper.className = 'page-transition-circle-wrapper';
-    wrapper.style.setProperty('--animation-duration-circle', DURATION_ANIMATION_CIRCLE + 'ms');
-    wrapper.style.setProperty('--animation-duration-opacity', DURATION_ANIMATION_OPACITY + 'ms');
-    wrapper.style.setProperty('--animation-delay-glow', '60ms');
+    wrapper.className = 'page-transition-skip-down-wrapper';
     var glow = document.createElement('div');
-    glow.className = 'page-transition-circle-glow';
-    glow.style.left = x + 'px';
-    glow.style.top = y + 'px';
-    glow.style.width = size + 'px';
-    glow.style.height = size + 'px';
+    glow.className = 'page-transition-skip-down-glow';
+    var sheet = document.createElement('div');
+    sheet.className = 'page-transition-skip-down-sheet';
     wrapper.appendChild(glow);
-    var circle = document.createElement('div');
-    circle.className = 'page-transition-circle';
-    circle.style.left = x + 'px';
-    circle.style.top = y + 'px';
-    circle.style.width = size + 'px';
-    circle.style.height = size + 'px';
-    wrapper.appendChild(circle);
+    wrapper.appendChild(sheet);
     document.body.appendChild(wrapper);
+    wrapper.style.setProperty('--skip-down-duration', DURATION_ANIMATION_CIRCLE + 'ms');
     setTimeout(function () {
       if (typeof onComplete === 'function') onComplete();
-    }, DURATION_ANIMATION_CIRCLE);
+    }, DURATION_ANIMATION_CIRCLE + SKIP_DOWN_GLOW_DELAY_MS);
   }
 
   function ensurePauseAudioContext() {
@@ -238,6 +227,7 @@
 
   function doStartAfterClickSound() {
     if (startHint) startHint.classList.remove('playing');
+    if (watchVideoBtn) watchVideoBtn.classList.remove('watch-video-ack');
     if (window.resumeGameAudioContext) window.resumeGameAudioContext();
     unmuteOnInteraction();
     clickToStart.classList.remove('visible');
@@ -307,7 +297,7 @@
   video.addEventListener('loadeddata', onVideoReady, { once: true });
 
   // 最後保險機制：若影片事件完全沒被觸發（某些手機節省流量不預載影片），
-  // 在一段安全時間後仍強制切到影片畫面，至少讓使用者看到「天空很美」提示與開始按鈕
+  // 在一段安全時間後仍強制切到影片畫面，至少讓使用者看到入口提示與按鈕
   setTimeout(function () {
     if (videoScreen.classList.contains('visible')) return;
     showVideoScreen();
@@ -321,7 +311,6 @@
     beforeStartSong.pause();
     beforeStartSong.currentTime = 0;
     if (volumeBtn) volumeBtn.classList.add('hidden');
-    if (startHint) startHint.classList.add('playing');
     var ctx = null;
     try {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -366,21 +355,109 @@
       });
   }
 
-  clickToStart.addEventListener('click', function (e) {
-    e.preventDefault();
-    playClickSoundThenStart();
-  });
-  if (entranceClickIcon) {
-    entranceClickIcon.addEventListener('click', function (e) {
+  function playClickSoundThenFadeToGame(entry, options) {
+    var opts = options || {};
+    unlockAllAudioOnce();
+    try {
+      beforeStartSong.pause();
+      beforeStartSong.currentTime = 0;
+    } catch (e0) {}
+    try {
+      aboutToStartSong.pause();
+      aboutToStartSong.currentTime = 0;
+    } catch (e1) {}
+    if (startBtn && !opts.skipStartBtnOverlap) startBtn.classList.add('vertical-overlap');
+    var ctx = null;
+    var done = function () {
+      fadeOutThenGoToGame(entry);
+    };
+    try {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch (e) {
+      clickSound.currentTime = 0;
+      clickSound.addEventListener('ended', function onEnd() {
+        clickSound.removeEventListener('ended', onEnd);
+        done();
+      }, { once: true });
+      clickSound.play().catch(function () { done(); });
+      return;
+    }
+    var startPlayDecoded = function (decoded) {
+      var src = ctx.createBufferSource();
+      src.buffer = decoded;
+      var gainNode = ctx.createGain();
+      gainNode.gain.value = clickSoundGain;
+      src.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      src.onended = function () {
+        done();
+      };
+      src.start(0);
+    };
+    fetch('./public/click-sound.mp3')
+      .then(function (res) { return res.arrayBuffer(); })
+      .then(function (buf) { return ctx.decodeAudioData(buf); })
+      .then(function (decoded) {
+        if (ctx.state === 'suspended') {
+          ctx.resume().then(function () { startPlayDecoded(decoded); }).catch(function () { done(); });
+        } else {
+          startPlayDecoded(decoded);
+        }
+      })
+      .catch(function () {
+        clickSound.currentTime = 0;
+        clickSound.addEventListener('ended', function onEnd() {
+          clickSound.removeEventListener('ended', onEnd);
+          done();
+        }, { once: true });
+        clickSound.play().catch(function () { done(); });
+      });
+  }
+
+  function tryConsumeIntroGate() {
+    if (introGateConsumed) return false;
+    introGateConsumed = true;
+    if (clickToStart) clickToStart.classList.add('intro-gate-consumed');
+    return true;
+  }
+
+  function onEnterGameClick(e) {
+    if (e) {
       e.preventDefault();
       e.stopPropagation();
-      playClickSoundThenStart();
-    });
-    entranceClickIcon.addEventListener('touchend', function (e) {
+    }
+    if (!enterGameBtn || !tryConsumeIntroGate()) return;
+    if (volumeBtn) volumeBtn.classList.add('hidden');
+    playClickSoundThenFadeToGame('enter_button', { skipStartBtnOverlap: true });
+  }
+
+  function onWatchVideoClick(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (!watchVideoBtn || !tryConsumeIntroGate()) return;
+    watchVideoBtn.classList.add('watch-video-ack');
+    playClickSoundThenStart();
+  }
+
+  if (enterGameBtn) {
+    enterGameBtn.addEventListener('click', onEnterGameClick);
+    enterGameBtn.addEventListener('touchend', function (e) {
       if (wrap.style.display === 'none' || !clickToStart.classList.contains('visible')) return;
       e.preventDefault();
       e.stopPropagation();
-      playClickSoundThenStart();
+      onEnterGameClick(e);
+    }, { passive: false, capture: true });
+  }
+
+  if (watchVideoBtn) {
+    watchVideoBtn.addEventListener('click', onWatchVideoClick);
+    watchVideoBtn.addEventListener('touchend', function (e) {
+      if (wrap.style.display === 'none' || !clickToStart.classList.contains('visible')) return;
+      e.preventDefault();
+      e.stopPropagation();
+      onWatchVideoClick(e);
     }, { passive: false, capture: true });
   }
 
@@ -468,12 +545,6 @@
       onResumeOverlay();
     }
   }, { passive: false, capture: true });
-  clickToStart.addEventListener('touchend', function (e) {
-    if (wrap.style.display === 'none' || !clickToStart.classList.contains('visible')) return;
-    e.preventDefault();
-    playClickSoundThenStart();
-  }, { passive: false, capture: true });
-
   document.addEventListener('keydown', function (e) {
     var anyDialogueVisible;
     if (e.key !== ' ' && e.code !== 'Space') return;
@@ -490,12 +561,13 @@
     }
   });
 
-  function fadeOutThenGoToGame() {
+  function fadeOutThenGoToGame(entry) {
+    var analyticsEntry = entry == null ? 'start_button' : entry;
     wrap.classList.add('intro-fade-out');
     wrap.addEventListener('transitionend', function onEnd(e) {
       if (e.propertyName !== 'opacity') return;
       wrap.removeEventListener('transitionend', onEnd);
-      logGameStart('start_button');
+      logGameStart(analyticsEntry);
       navigateFromIntroToGame();
     }, { once: true });
   }
@@ -518,7 +590,7 @@
         transitSound.volume = 1;
         transitSound.play().catch(function () {});
       } catch (e2) {}
-    }, 180);
+    }, 62);
     try {
       video.pause();
     } catch (e) {}
@@ -537,73 +609,14 @@
       wrap.classList.add('intro-fade-out');
     }
     document.body.style.backgroundColor = '#fe7f70';
-    var x = window.innerWidth / 2;
-    var y = window.innerHeight / 2;
-    if (clickEvent) {
-      if (clickEvent.clientX != null && clickEvent.clientY != null) {
-        x = clickEvent.clientX;
-        y = clickEvent.clientY;
-      } else if (clickEvent.changedTouches && clickEvent.changedTouches[0]) {
-        x = clickEvent.changedTouches[0].clientX;
-        y = clickEvent.changedTouches[0].clientY;
-      }
-    }
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    var size = 2 * Math.sqrt(w * w + h * h);
-    createExpandingCircle({ x: x, y: y, size: size }, function () {
+    createSkipCenterSlideDownTransition(function () {
       logGameStart('skip');
       navigateFromIntroToGame();
     });
   }
 
   function playClickSoundThenGoToGame() {
-    unlockAllAudioOnce();
-    aboutToStartSong.pause();
-    aboutToStartSong.currentTime = 0;
-    startBtn.classList.add('vertical-overlap');
-    var ctx = null;
-    try {
-      ctx = new (window.AudioContext || window.webkitAudioContext)();
-    } catch (e) {
-      clickSound.currentTime = 0;
-      clickSound.addEventListener('ended', function onEnd() {
-        clickSound.removeEventListener('ended', onEnd);
-        fadeOutThenGoToGame();
-      }, { once: true });
-      clickSound.play().catch(function () { fadeOutThenGoToGame(); });
-      return;
-    }
-    var startPlayDecoded = function (decoded) {
-      var src = ctx.createBufferSource();
-      src.buffer = decoded;
-      var gainNode = ctx.createGain();
-      gainNode.gain.value = clickSoundGain;
-      src.connect(gainNode);
-      gainNode.connect(ctx.destination);
-      src.onended = function () {
-        fadeOutThenGoToGame();
-      };
-      src.start(0);
-    };
-    fetch('./public/click-sound.mp3')
-      .then(function (res) { return res.arrayBuffer(); })
-      .then(function (buf) { return ctx.decodeAudioData(buf); })
-      .then(function (decoded) {
-        if (ctx.state === 'suspended') {
-          ctx.resume().then(function () { startPlayDecoded(decoded); }).catch(function () { fadeOutThenGoToGame(); });
-        } else {
-          startPlayDecoded(decoded);
-        }
-      })
-      .catch(function () {
-        clickSound.currentTime = 0;
-        clickSound.addEventListener('ended', function onEnd() {
-          clickSound.removeEventListener('ended', onEnd);
-          fadeOutThenGoToGame();
-        }, { once: true });
-        clickSound.play().catch(function () { fadeOutThenGoToGame(); });
-      });
+    playClickSoundThenFadeToGame('start_button');
   }
 
   startBtn.addEventListener('click', function (e) {
