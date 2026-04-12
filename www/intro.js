@@ -49,6 +49,14 @@
   var DURATION_ANIMATION_OPACITY = 400;
   var GAME_URL = './game.html';
 
+  function logGameStart(entry) {
+    try {
+      if (typeof window.__eggLogAnalytics === 'function') {
+        window.__eggLogAnalytics('game_start', { entry: entry });
+      }
+    } catch (e) {}
+  }
+
   function createExpandingCircle(opts, onComplete) {
     var x = opts.x != null ? opts.x : window.innerWidth / 2;
     var y = opts.y != null ? opts.y : window.innerHeight / 2;
@@ -479,6 +487,7 @@
     wrap.addEventListener('transitionend', function onEnd(e) {
       if (e.propertyName !== 'opacity') return;
       wrap.removeEventListener('transitionend', onEnd);
+      logGameStart('start_button');
       window.location.href = GAME_URL;
     }, { once: true });
   }
@@ -535,6 +544,7 @@
     var h = window.innerHeight;
     var size = 2 * Math.sqrt(w * w + h * h);
     createExpandingCircle({ x: x, y: y, size: size }, function () {
+      logGameStart('skip');
       window.location.href = GAME_URL;
     });
   }

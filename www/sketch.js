@@ -1382,6 +1382,16 @@ function tryShowInterstitialAfterLevelTransition(force) {
   window.showInterstitialAd();
 }
 
+// Firebase Analytics 自訂事件（game.html 的 Firebase 模組會掛 window.__eggLogAnalytics）
+let analyticsLevel1Started = false;
+let analyticsLevel1Completed = false;
+function tryEggAnalytics(name, params) {
+  if (typeof window.__eggLogAnalytics !== 'function') return;
+  try {
+    window.__eggLogAnalytics(name, params || {});
+  } catch (e) {}
+}
+
 // --- 拖曳／放置動畫（主機遊戲感）---
 let dragOrbitPhase = 0;   // 拖曳時軌道星球旋轉相位（每幀累加）
 const DRAG_ORBIT_SPEED = 0.08;
@@ -2196,6 +2206,8 @@ function initGame() {
   startTime = null;
   endTime = null;
   currentLevel = 0;  // 新局從第一關 ABC 開始
+  analyticsLevel1Started = false;
+  analyticsLevel1Completed = false;
   backgroundMusicStartedEver = false; // 新局時重置，第一次 drag 再開始背景音樂
   initLevel(currentLevel);
   setReplayButtonRect();
@@ -3335,6 +3347,10 @@ function pointerPressed(px, py) {
   // }
   const hit = hitTestItem(px, py);
   if (hit) {
+    if (gameState === 'idle' && currentLevel === 0 && !analyticsLevel1Started) {
+      analyticsLevel1Started = true;
+      tryEggAnalytics('level_1_start');
+    }
     if (gameState === 'idle') gameState = 'playing';
     // 本關第一次 drag 才開始計時
     if (startTime == null) startTime = millis();
@@ -3447,6 +3463,10 @@ function checkWin() {
     }
   }
   const elapsed = (startTime != null) ? (millis() - startTime) / 1000 : 0;
+  if (currentLevel === 0 && !analyticsLevel1Completed) {
+    analyticsLevel1Completed = true;
+    tryEggAnalytics('level_1_complete');
+  }
   playLevelCompleteSound();
   if (currentLevel < NUM_LEVELS - 1) {
     // 還有下一關：先播恭喜彩帶特效，結束後再切下一關
