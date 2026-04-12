@@ -28,6 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" />
+  <link rel="stylesheet" href="intro-overlay.css" />
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -571,6 +572,102 @@
   </style>
 </head>
 <body>
+  <div id="intro-boot-layer" aria-hidden="false">
+  <div id="intro-wrap">
+    <button type="button" id="intro-volume-btn" class="intro-volume-btn" title="開啟音樂" aria-label="開啟音樂">
+      <i class="fa-solid fa-volume-xmark"></i>
+    </button>
+    <div id="intro-loading">
+      <div class="intro-loading-inner">
+        <div id="intro-loading-dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </div>
+    <div id="intro-video-screen">
+      <video id="intro-video" playsinline preload="auto" muted poster="./public/video-fall-back-poster.png">
+        <source src="./public/eggcute-promo-final-video-02092026-(11).mp4" type="video/mp4" />
+      </video>
+      <div id="intro-click-to-start">
+        <div class="start-hint-wrap">
+          <span class="start-hint">呼~ 今天的天空真美啊~!</span>
+          <span class="entrance-click-icon" aria-hidden="true">
+            <img src="./public/entrance-click-icon.png" alt="" />
+          </span>
+        </div>
+      </div>
+      <div id="intro-pause-overlay">
+      </div>
+      <div id="intro-dialogue-6s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">準備好了嗎，伙計？</span>
+            <button type="button" class="intro-dialogue-ok">ok</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-12s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">哇...好香哦!</span>
+            <button type="button" class="intro-dialogue-ok">Yes</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-22s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">太好了^^</span>
+            <button type="button" class="intro-dialogue-ok">Go</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-42s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">沒關係呦~</span>
+            <button type="button" class="intro-dialogue-ok">好唷!</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-52s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">太好了</span>
+            <button type="button" class="intro-dialogue-ok">Good</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-dialogue-58s">
+        <div class="intro-dialogue-box">
+          <div class="intro-dialogue-inner">
+            <span class="intro-dialogue-text">那可對極了!</span>
+            <button type="button" class="intro-dialogue-ok">是吧!!</button>
+          </div>
+        </div>
+      </div>
+      <div id="intro-start-btn-wrap">
+        <button type="button" id="intro-start-btn"><span>開始遊戲</span></button>
+      </div>
+      <button type="button" id="intro-skip-btn">skip / 跳過</button>
+    </div>
+  </div>
+  </div>
+  <script>
+    window.__eggDismissIntroBootLayer = function () {
+      var v = document.getElementById('intro-video');
+      if (v) { try { v.pause(); } catch (e) {} }
+      var boot = document.getElementById('intro-boot-layer');
+      if (boot) boot.remove();
+      if (typeof windowResized === 'function') windowResized();
+      window.dispatchEvent(new Event('resize'));
+    };
+  </script>
+  <script src="intro.js"></script>
   <div id="game-entrance-overlay" class="game-entrance-overlay" aria-hidden="true"></div>
   <main id="game-container">
     <div id="celebration-overlay" class="celebration-erika-wrap" aria-hidden="true">

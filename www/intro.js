@@ -49,6 +49,14 @@
   var DURATION_ANIMATION_OPACITY = 400;
   var GAME_URL = './game.html';
 
+  function navigateFromIntroToGame() {
+    if (typeof window.__eggDismissIntroBootLayer === 'function') {
+      window.__eggDismissIntroBootLayer();
+    } else {
+      window.location.href = GAME_URL;
+    }
+  }
+
   function logGameStart(entry) {
     try {
       if (typeof window.__eggLogAnalytics === 'function') {
@@ -488,7 +496,7 @@
       if (e.propertyName !== 'opacity') return;
       wrap.removeEventListener('transitionend', onEnd);
       logGameStart('start_button');
-      window.location.href = GAME_URL;
+      navigateFromIntroToGame();
     }, { once: true });
   }
 
@@ -545,7 +553,7 @@
     var size = 2 * Math.sqrt(w * w + h * h);
     createExpandingCircle({ x: x, y: y, size: size }, function () {
       logGameStart('skip');
-      window.location.href = GAME_URL;
+      navigateFromIntroToGame();
     });
   }
 
