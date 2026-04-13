@@ -1571,19 +1571,35 @@ function drawLevelCompleteCelebrationOverlay() {
   const t = millis() - levelCompleteCelebration.startedAt;
   const duration = levelCompleteCelebration.duration;
   const progress = Math.min(1, t / duration);
+  const titleText = currentLevelCompleteMessage || '恭喜過關！';
+  const groupName = LEVEL_GROUPS[levelCompleteCelebration.completedLevel] || '—';
+  const subtitleText = groupName + ' ' + (currentLevelCompleteSuffix || '完成');
+  const titleSize = Math.min(42, width * 0.1);
+  const subtitleSize = Math.min(24, width * 0.055);
 
   push();
   fill(THEME_CELEBRATION_OVERLAY[0], THEME_CELEBRATION_OVERLAY[1], THEME_CELEBRATION_OVERLAY[2], 140);
   noStroke();
   rect(0, 0, width, height);
+  // 文字底板：避免字和背景格線融合，提升可讀性
+  const panelW = Math.min(width * 0.86, 520);
+  const panelH = Math.min(height * 0.2, 150);
+  const panelX = width / 2 - panelW / 2;
+  const panelY = height * 0.22;
+  fill(30, 24, 20, 138);
+  rect(panelX, panelY, panelW, panelH, 16);
+  stroke(255, 236, 210, 90);
+  strokeWeight(1.2);
+  noFill();
+  rect(panelX + 3, panelY + 3, panelW - 6, panelH - 6, 14);
+  noStroke();
   fill(255, 248, 235);
   textAlign(CENTER, CENTER);
-  textSize(Math.min(42, width * 0.1));
-  text(currentLevelCompleteMessage || '恭喜過關！', width / 2, height * 0.28);
-  const groupName = LEVEL_GROUPS[levelCompleteCelebration.completedLevel] || '—';
-  textSize(Math.min(24, width * 0.055));
+  textSize(titleSize);
+  text(titleText, width / 2, panelY + panelH * 0.42);
+  textSize(subtitleSize);
   fill(255, 230, 200);
-  text(groupName + ' ' + (currentLevelCompleteSuffix || '完成'), width / 2, height * 0.36);
+  text(subtitleText, width / 2, panelY + panelH * 0.72);
   pop();
 
   updateAndDrawConfetti();
