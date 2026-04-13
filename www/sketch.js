@@ -516,6 +516,16 @@ function getAvatarImageForType(level, typeIndex) {
   return null;
 }
 
+function ensureAvatarImagesForLevel(levelIndex) {
+  const urls = AVATAR_URLS_BY_LEVEL[levelIndex];
+  if (!urls || !Array.isArray(urls)) return;
+  if (!avatarImagesByLevel[levelIndex]) avatarImagesByLevel[levelIndex] = [];
+  for (let i = 0; i < urls.length; i++) {
+    if (avatarImagesByLevel[levelIndex][i]) continue;
+    avatarImagesByLevel[levelIndex][i] = loadImage(urls[i]);
+  }
+}
+
 // --- 第 24 關 Slab 圖示：從 Font Awesome 隨機選 3 個，已用過的記錄不重複 ---
 function getUsedSlabIcons() {
   try {
@@ -839,13 +849,11 @@ function ensureAllSlabLevelsReady() {
     saveAweLevelIconsToStorage();
   }
   syncFaNamesFromSlabIcons();
-  for (var L = SLAB_LEVEL_FIRST; L <= SLAB_LEVEL_LAST; L++) {
-    ensureSlabIconsForLevel(L);
-  }
+  preloadSlabLevelsNearLevel(currentLevel);
   if (slabFallbackTimeoutId) clearTimeout(slabFallbackTimeoutId);
   slabFallbackTimeoutId = setTimeout(function () {
     slabFallbackTimeoutId = null;
-    for (let L = SLAB_LEVEL_FIRST; L <= SLAB_LEVEL_LAST; L++) {
+    for (let L = Math.max(SLAB_LEVEL_FIRST, currentLevel); L <= Math.min(SLAB_LEVEL_LAST, currentLevel + 1); L++) {
       if (!slabImagesByLevel[L]) continue;
       for (let k = 0; k < 3; k++) {
         (function (lev, j) {
@@ -865,6 +873,18 @@ function ensureAllSlabLevelsReady() {
       }
     }
   }, 2500);
+}
+
+function preloadSlabLevelsNearLevel(levelIndex) {
+  for (let L = Math.max(SLAB_LEVEL_FIRST, levelIndex); L <= Math.min(SLAB_LEVEL_LAST, levelIndex + 1); L++) {
+    ensureSlabIconsForLevel(L);
+  }
+}
+
+function preloadAssetsNearLevel(levelIndex) {
+  ensureAvatarImagesForLevel(levelIndex);
+  ensureAvatarImagesForLevel(levelIndex + 1);
+  preloadSlabLevelsNearLevel(levelIndex);
 }
 
 // 依類型回傳當前 awe 關卡的圖示 PImage，無或未載入則回傳 null
@@ -1374,8 +1394,11 @@ const SWAP_HISTORY_MAX = 12;   // 已交換區顯示筆數
 let swapHistory = [];          // [ { from: { cell, slot }, to: { cell, slot } } ]
 // 過關恭喜特效（彩帶＋貓走過）：過場時顯示約 3 秒，結束後才切下一關
 const CELEBRATION_DURATION_MS = 3000;
-const CONFETTI_COUNT = 80;
+const CONFETTI_COUNT_DESKTOP = 80;
+const CONFETTI_COUNT_MOBILE = 28;
 let levelCompleteCelebration = null;  // { active, startedAt, duration, completedLevel, particles[] } | null
+let celebrationOverlayEl = null;
+let celebrationOverlayVisible = false;
 
 // 插頁廣告：只在過關轉場呼叫（game.html 載入的 admob-init.js 會掛 window.showInterstitialAd）
 const INTERSTITIAL_COOLDOWN_MS = 60 * 1000;
@@ -1419,6 +1442,7 @@ let timerLastLevelText = '';
 // 彩帶粒子：從畫面上方噴出、落下，帶旋轉與隨機顏色
 function createConfettiParticles() {
   const particles = [];
+  const confettiCount = LOW_PERF_MODE ? CONFETTI_COUNT_MOBILE : CONFETTI_COUNT_DESKTOP;
   const colors = [
     [255, 220, 200], [200, 235, 220], [255, 235, 210], [220, 240, 200],
     [255, 215, 180], [230, 245, 230], [255, 230, 220], [240, 220, 200],
@@ -1426,7 +1450,7 @@ function createConfettiParticles() {
   ];
   const cx = width / 2;
   const topY = height * 0.15;
-  for (let i = 0; i < CONFETTI_COUNT; i++) {
+  for (let i = 0; i < confettiCount; i++) {
     const angle = -PI / 2 + random(-0.6, 0.6);
     const speed = random(4, 12);
     particles.push({
@@ -1563,7 +1587,16 @@ function drawLevelCompleteCelebrationOverlay() {
   pop();
 
   updateAndDrawConfetti();
-  drawNyanCatCelebration(progress);
+  if (!LOW_PERF_MODE) drawNyanCatCelebration(progress);
+}
+
+function setCelebrationOverlayVisible(visible) {
+  if (celebrationOverlayVisible === visible) return;
+  if (!celebrationOverlayEl) celebrationOverlayEl = document.getElementById('celebration-overlay');
+  if (!celebrationOverlayEl) return;
+  celebrationOverlayVisible = visible;
+  if (visible) celebrationOverlayEl.classList.add('visible');
+  else celebrationOverlayEl.classList.remove('visible');
 }
 
 function buildLevelCompleteMessagePoolFromJson(data) {
@@ -1660,13 +1693,7 @@ function preload() {
   }, function () {
     levelCompleteSuffixesPool = [];
   });
-  for (const level in AVATAR_URLS_BY_LEVEL) {
-    const urls = AVATAR_URLS_BY_LEVEL[level];
-    avatarImagesByLevel[level] = [];
-    for (let i = 0; i < urls.length; i++) {
-      avatarImagesByLevel[level][i] = loadImage(urls[i]);
-    }
-  }
+  // 頭像改成按需載入（當前關+下一關），避免首載一次解碼太多圖片
   bgImage = loadImage('public/background-theme.png');
 }
 
@@ -2233,6 +2260,7 @@ function getSwapZoneSlotCenter(slotIndex) {
 
 // 載入指定關卡：該關的 3 種卡片（ABC / DEF / GHI）各 9 個，隨機分到 9 櫃
 function initLevel(level) {
+  setCelebrationOverlayVisible(false);
   draggedItem = null;
   dropAnimation = null;
   stateHistory = [];
@@ -2265,6 +2293,7 @@ function initLevel(level) {
   updateItemPositions();
   pushStateToHistory('init');
   updateLevelBgm(level);
+  preloadAssetsNearLevel(level);
 }
 
 function initGame() {
@@ -2438,13 +2467,11 @@ function draw() {
     drawResultOverlay();
   }
   if (levelCompleteCelebration && levelCompleteCelebration.active) {
-    const overlayEl = document.getElementById('celebration-overlay');
-    if (overlayEl) overlayEl.classList.add('visible');
+    setCelebrationOverlayVisible(true);
     drawLevelCompleteCelebrationOverlay();
     const t = millis() - levelCompleteCelebration.startedAt;
     if (t >= levelCompleteCelebration.duration) {
-      const overlayEl = document.getElementById('celebration-overlay');
-      if (overlayEl) overlayEl.classList.remove('visible');
+      setCelebrationOverlayVisible(false);
       tryShowInterstitialAfterLevelTransition();
       currentLevel++;
       initLevel(currentLevel);  // 計時已在 initLevel 歸零，本關第一次 drag 才開始
