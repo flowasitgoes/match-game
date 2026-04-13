@@ -260,6 +260,12 @@ let audioRecordingStartedEver = false; // 僅在第一次拖曳時開始錄音
 let timeDisplayEl = null; // 時間數值顯示（X 秒）
 let loveLabelImg = null;  // LOVE 標籤圖片（取代文字）
 let levelDisplayEl = null; // 關卡顯示（在時間下方，如 No.1 - ABC）
+let levelCompleteMessagesJson = null; // 過關文案 JSON
+let levelCompleteMessagesPool = [];    // 扁平化文案池
+let currentLevelCompleteMessage = '恭喜過關！';
+let levelCompleteSuffixesJson = null; // 過關副標接字 JSON
+let levelCompleteSuffixesPool = [];    // 副標接字池
+let currentLevelCompleteSuffix = '完成';
 let winConditionHintEl = null; // 過關提示 overlay（正上方）
 let winConditionHintLastText = null;  // 上次設定的文字，避免每幀改 DOM 造成 repaint
 let winConditionHintDismissed = false; // 使用者拖過卡片後即永久不再顯示（直到重新整理）
@@ -1400,10 +1406,15 @@ const DROP_ANIMATION_DURATION_MS = 420;  // 放下時旋轉一圈＋飛行的時
 let dropAnimation = null; // { startTime, startX, startY, endX, endY, typeIndex, placed, srcCell, srcSlot, targetCell, swapSlot, doSwap } 放開後飛行＋旋轉，結束時再執行實際放置
 // 效能：手機／低階裝置可設 true，減少粒子與 shadowBlur 以換取流暢度
 const ANIMATION_LITE = typeof navigator !== 'undefined' && (navigator.maxTouchPoints > 0 || (typeof window !== 'undefined' && window.innerWidth < 640));
+const LOW_PERF_MODE = ANIMATION_LITE;
+const TIMER_UPDATE_INTERVAL_MS = 100;
 const DEBUG_PANEL_WIDTH = 280;
 let debugPanelEl = null;
 let gameCanvasWrapper = null;
 let erikaCelebrationWrap = null;  // 過場時顯示的えりか風格 CSS 角色（走路動畫）
+let timerLastDomUpdateMs = -1;
+let timerLastText = '';
+let timerLastLevelText = '';
 
 // 彩帶粒子：從畫面上方噴出、落下，帶旋轉與隨機顏色
 function createConfettiParticles() {
@@ -1544,15 +1555,55 @@ function drawLevelCompleteCelebrationOverlay() {
   fill(255, 248, 235);
   textAlign(CENTER, CENTER);
   textSize(Math.min(42, width * 0.1));
-  text('恭喜過關！', width / 2, height * 0.28);
+  text(currentLevelCompleteMessage || '恭喜過關！', width / 2, height * 0.28);
   const groupName = LEVEL_GROUPS[levelCompleteCelebration.completedLevel] || '—';
   textSize(Math.min(24, width * 0.055));
   fill(255, 230, 200);
-  text(groupName + ' 完成', width / 2, height * 0.36);
+  text(groupName + ' ' + (currentLevelCompleteSuffix || '完成'), width / 2, height * 0.36);
   pop();
 
   updateAndDrawConfetti();
   drawNyanCatCelebration(progress);
+}
+
+function buildLevelCompleteMessagePoolFromJson(data) {
+  if (!data || typeof data !== 'object') return [];
+  if (Array.isArray(data.allMessages) && data.allMessages.length > 0) {
+    return data.allMessages.filter(function (m) { return typeof m === 'string' && m.trim() !== ''; });
+  }
+  var out = [];
+  if (data.categories && typeof data.categories === 'object') {
+    var keys = Object.keys(data.categories);
+    for (var i = 0; i < keys.length; i++) {
+      var arr = data.categories[keys[i]];
+      if (!Array.isArray(arr)) continue;
+      for (var j = 0; j < arr.length; j++) {
+        if (typeof arr[j] === 'string' && arr[j].trim() !== '') out.push(arr[j]);
+      }
+    }
+  }
+  return out;
+}
+
+function pickRandomLevelCompleteMessage() {
+  if (!levelCompleteMessagesPool || levelCompleteMessagesPool.length === 0) {
+    return '恭喜過關！';
+  }
+  var idx = floor(random(levelCompleteMessagesPool.length));
+  return levelCompleteMessagesPool[idx] || '恭喜過關！';
+}
+
+function buildLevelCompleteSuffixPoolFromJson(data) {
+  if (!data || typeof data !== 'object' || !Array.isArray(data.suffixes)) return [];
+  return data.suffixes.filter(function (m) { return typeof m === 'string' && m.trim() !== ''; });
+}
+
+function pickRandomLevelCompleteSuffix() {
+  if (!levelCompleteSuffixesPool || levelCompleteSuffixesPool.length === 0) {
+    return '完成';
+  }
+  var idx = floor(random(levelCompleteSuffixesPool.length));
+  return levelCompleteSuffixesPool[idx] || '完成';
 }
 
 function getGameCanvasSize() {
@@ -1599,6 +1650,16 @@ function enableSound() {
 }
 
 function preload() {
+  levelCompleteMessagesJson = loadJSON('level-complete-messages.json', function (data) {
+    levelCompleteMessagesPool = buildLevelCompleteMessagePoolFromJson(data);
+  }, function () {
+    levelCompleteMessagesPool = [];
+  });
+  levelCompleteSuffixesJson = loadJSON('level-complete-suffixes.json', function (data) {
+    levelCompleteSuffixesPool = buildLevelCompleteSuffixPoolFromJson(data);
+  }, function () {
+    levelCompleteSuffixesPool = [];
+  });
   for (const level in AVATAR_URLS_BY_LEVEL) {
     const urls = AVATAR_URLS_BY_LEVEL[level];
     avatarImagesByLevel[level] = [];
@@ -1610,6 +1671,10 @@ function preload() {
 }
 
 function setup() {
+  // 手機端降低實際渲染像素，顯著減少 fill-rate 負擔
+  if (LOW_PERF_MODE) pixelDensity(1);
+  // 手機端稍降幀率，優先確保拖曳穩定不抖動
+  if (LOW_PERF_MODE) frameRate(45);
   const size = getGameCanvasSize();
   const soundAndCanvas = createDiv('');
   soundAndCanvas.class('sound-and-canvas-wrapper');
@@ -2325,9 +2390,6 @@ function drawThemeDecorations() {
 }
 
 function draw() {
-  // 每幀都檢查過關（9 櫃每櫃 3 格全部同一種才過關），避免漏判
-  if (cells) checkWin();
-
   drawThemeBackground();
   drawThemeDecorations();
 
@@ -2728,7 +2790,7 @@ function drawDragOrbitPlanets(cx, cy) {
   dragOrbitPhase += DRAG_ORBIT_SPEED;
   const phase = dragOrbitPhase;
   const t = millis() * 0.002;
-  const lite = ANIMATION_LITE;
+  const lite = LOW_PERF_MODE;
   const bloomCount = lite ? 4 : 6;
   const useShadow = !lite;
   // mobile 時光圈稍微小一點
@@ -2830,7 +2892,7 @@ function easeOutBack(t) {
 // 拋物線＋遠近感：回傳 { x, y, scale }，progress 0~1。弧高（像素）、終點略縮
 const DROP_ARC_HEIGHT = 55;
 const DROP_SCALE_MIN = 0.38;
-const DROP_TRAIL_STEPS = ANIMATION_LITE ? 6 : 10;
+const DROP_TRAIL_STEPS = LOW_PERF_MODE ? 4 : 8;
 
 function getDropPosition(da, progress) {
   const eased = easeOutBack(progress);
@@ -2880,21 +2942,21 @@ function drawDropOrganicLines(da, x, y, progress) {
   const ux = -dx / len;
   const uy = -dy / len;
   const phase = progress * TWO_PI * 2 + millis() * 0.003;
-  const lineCount = ANIMATION_LITE ? 3 : 5;
+  const lineCount = LOW_PERF_MODE ? 2 : 4;
   noFill();
   for (let i = 0; i < lineCount; i++) {
     const t = i / lineCount;
     const angle = t * PI * 0.8 - PI * 0.4 + 0.15 * sin(phase + i * 2);
     const dirX = ux * cos(angle) - uy * sin(angle);
     const dirY = ux * sin(angle) + uy * cos(angle);
-    const segLen = 18 + (ANIMATION_LITE ? 8 : 14 * organicNoise(progress * 12, i)) + 8 * sin(phase + i);
+    const segLen = 18 + (LOW_PERF_MODE ? 6 : 12 * organicNoise(progress * 12, i)) + 8 * sin(phase + i);
     const cpx = x + dirX * segLen * 0.5 + 6 * sin(phase + i * 1.7);
     const cpy = y + dirY * segLen * 0.5 + 5 * cos(phase + i * 1.3);
-    const ex = x + dirX * segLen + (ANIMATION_LITE ? 0 : 4 * organicNoise(phase, i + 10));
-    const ey = y + dirY * segLen + (ANIMATION_LITE ? 0 : 4 * organicNoise(phase, i + 20));
-    const alpha = (1 - progress) * (70 + (ANIMATION_LITE ? 20 : 40 * organicNoise(phase, i)));
+    const ex = x + dirX * segLen + (LOW_PERF_MODE ? 0 : 4 * organicNoise(phase, i + 10));
+    const ey = y + dirY * segLen + (LOW_PERF_MODE ? 0 : 4 * organicNoise(phase, i + 20));
+    const alpha = (1 - progress) * (60 + (LOW_PERF_MODE ? 15 : 35 * organicNoise(phase, i)));
     stroke(255, 245, 220, alpha);
-    strokeWeight(1.5 + (ANIMATION_LITE ? 0 : 0.5 * organicNoise(phase, i + 5)));
+    strokeWeight(1.4 + (LOW_PERF_MODE ? 0 : 0.4 * organicNoise(phase, i + 5)));
     bezier(x, y, cpx, cpy, cpx + 3 * sin(phase * 2), cpy + 3 * cos(phase * 2), ex, ey);
   }
   noStroke();
@@ -2907,10 +2969,10 @@ function drawDropWaterFlow(da, progress) {
   const cx = da.endX;
   const cy = da.endY;
   const phase = millis() * 0.004 + progress * TWO_PI;
-  const lite = ANIMATION_LITE;
-  const streamCount = lite ? 4 : 6;
-  const waveCount = lite ? 2 : 3;
-  const dropCount = lite ? 4 : 8;
+  const lite = LOW_PERF_MODE;
+  const streamCount = lite ? 3 : 5;
+  const waveCount = lite ? 1 : 2;
+  const dropCount = lite ? 3 : 6;
   noFill();
 
   for (let i = 0; i < streamCount; i++) {
@@ -3090,18 +3152,35 @@ function drawOneItem(x, y, typeIndex, isDragging, isHighlight, cellIndex) {
 function drawTimer() {
   if (!timeDisplayEl) return;
   if (gameState !== 'playing' && gameState !== 'completed') {
-    timeDisplayEl.elt.textContent = '';
+    if (timerLastText !== '') {
+      timeDisplayEl.elt.textContent = '';
+      timerLastText = '';
+    }
     if (loveLabelImg && loveLabelImg.elt) loveLabelImg.elt.style.visibility = 'hidden';
-    if (levelDisplayEl) levelDisplayEl.elt.textContent = '';
+    if (levelDisplayEl && timerLastLevelText !== '') {
+      levelDisplayEl.elt.textContent = '';
+      timerLastLevelText = '';
+    }
     return;
   }
+  const nowMs = millis();
+  if (timerLastDomUpdateMs >= 0 && nowMs - timerLastDomUpdateMs < TIMER_UPDATE_INTERVAL_MS) return;
+  timerLastDomUpdateMs = nowMs;
   if (loveLabelImg && loveLabelImg.elt) loveLabelImg.elt.style.visibility = 'visible';
   const elapsed = (startTime == null)
     ? 0
-    : (gameState === 'completed' ? (endTime - startTime) / 1000 : (millis() - startTime) / 1000);
-  timeDisplayEl.elt.textContent = elapsed.toFixed(1) + ' 秒';
+    : (gameState === 'completed' ? (endTime - startTime) / 1000 : (nowMs - startTime) / 1000);
+  const nextText = elapsed.toFixed(1) + ' 秒';
+  if (nextText !== timerLastText) {
+    timeDisplayEl.elt.textContent = nextText;
+    timerLastText = nextText;
+  }
   if (levelDisplayEl && typeof currentLevel !== 'undefined' && LEVEL_GROUPS[currentLevel]) {
-    levelDisplayEl.elt.textContent = 'No.' + (currentLevel + 1) + ' - ' + LEVEL_GROUPS[currentLevel];
+    const nextLevelText = 'No.' + (currentLevel + 1) + ' - ' + LEVEL_GROUPS[currentLevel];
+    if (nextLevelText !== timerLastLevelText) {
+      levelDisplayEl.elt.textContent = nextLevelText;
+      timerLastLevelText = nextLevelText;
+    }
   }
 }
 
@@ -3463,6 +3542,8 @@ function checkWin() {
       if (Number(list[s].typeIndex) !== t) return;
     }
   }
+  currentLevelCompleteMessage = pickRandomLevelCompleteMessage();
+  currentLevelCompleteSuffix = pickRandomLevelCompleteSuffix();
   const elapsed = (startTime != null) ? (millis() - startTime) / 1000 : 0;
   if (!analyticsLevelCompleted[currentLevel]) {
     analyticsLevelCompleted[currentLevel] = true;
